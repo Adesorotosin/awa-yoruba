@@ -230,13 +230,13 @@ export default function YorubaGameSection() {
     }
     setWonReward(null);
   };
-
+/*
   if (!mounted) {
     return (
       <section className="py-16 bg-[#0B3524]/60 border-y border-[#1d6b4b]/40 relative overflow-hidden font-sans min-h-[520px]" />
     );
   }
-
+*/
   return (
     <section className="py-16 bg-[#0B3524]/60 border-y border-[#1d6b4b]/40 relative overflow-hidden font-sans">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
