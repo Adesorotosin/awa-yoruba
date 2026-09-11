@@ -1,5 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import HeroSection from "@/components/layout/HeroSection";
+import YorubaGameSection from "@/components/layout/YorubaGameSection";
 import HowItWorksSection from "@/components/layout/HowItWorksSection";
 import ProgramsSection from "@/components/layout/ProgramsSection";
 import ParentPartnershipSection from "@/components/layout/ParentPartnershipSection";
@@ -13,6 +14,7 @@ export default function Home() {
     <main className="min-h-screen">
       <Navbar />
       <HeroSection />
+      <YorubaGameSection />
       <HowItWorksSection />
       <ProgramsSection />
       <ParentPartnershipSection />
