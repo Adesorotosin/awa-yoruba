@@ -23,7 +23,7 @@ export async function PATCH(request: Request) {
     if (action === "reject" && booking.status !== "PENDING") return NextResponse.json({ error: "Only pending bookings can be rejected." }, { status: 409 });
     if (action === "complete" && booking.status !== "CONFIRMED") return NextResponse.json({ error: "Only confirmed bookings can be completed." }, { status: 409 });
 
-    const nextStatus = action === "confirm" ? "CONFIRMED" : action === "reject" ? "CANCELLED" : "COMPLETED";
+    const nextStatus = action === "confirm" ? "AWAITING_PAYMENT" : action === "reject" ? "CANCELLED" : "COMPLETED";
     const updatedBooking = await db.booking.update({
       where: { id: booking.id },
       data: { status: nextStatus },
@@ -33,7 +33,12 @@ export async function PATCH(request: Request) {
     return NextResponse.json({
       success: true,
       booking: updatedBooking,
-      message: action === "confirm" ? "Booking confirmed." : action === "reject" ? "Booking request declined." : "Lesson marked as completed.",
+      message:
+        action === "confirm"
+          ? "Booking accepted. The learner can now complete payment."
+          : action === "reject"
+            ? "Booking request declined."
+            : "Lesson marked as completed.",
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
