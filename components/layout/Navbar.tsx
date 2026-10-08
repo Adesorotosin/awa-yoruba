@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -17,12 +18,15 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-[#E8DECE] bg-[#FFF8ED]/95 px-5 py-3 backdrop-blur-md sm:px-8 lg:px-12">
       <div className="mx-auto flex max-w-7xl items-center justify-between">
-        <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#114B33] text-sm font-black text-white">À</div>
-          <div>
-            <div className="text-base font-black tracking-wide text-[#114B33]">AWA YORUBA</div>
-            <div className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8A806F]">Learn · Speak · Belong</div>
-          </div>
+        <Link href="/" className="flex items-center" onClick={() => setOpen(false)} aria-label="ÀWA YORÙBÁ home">
+          <Image
+            src="/logo.svg"
+            alt="ÀWA YORÙBÁ"
+            width={77}
+            height={68}
+            priority
+            className="h-12 w-auto object-contain sm:h-14"
+          />
         </Link>
 
         <nav className="hidden items-center gap-7 text-sm font-semibold text-[#3C473F] lg:flex">
