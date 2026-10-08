@@ -43,6 +43,10 @@ export async function POST(request: Request) {
       return NextResponse.redirect(new URL("/tutor/apply?error=already-applied", request.url));
     }
 
+    if (existingUser?.passwordHash) {
+      return NextResponse.redirect(new URL("/tutor/apply?error=account-exists", request.url));
+    }
+
     const user = existingUser
       ? await db.user.update({
           where: { id: existingUser.id },
