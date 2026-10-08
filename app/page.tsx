@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import Navbar from "@/components/layout/Navbar";
 import {
   ArrowRight,
   CalendarDays,
@@ -17,6 +18,7 @@ const tutors = [
   {
     name: "Yoruba Tutor",
     initials: "YT",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
     rating: "4.9",
     lessons: "120+ lessons",
     rate: "₦8,500",
@@ -25,6 +27,7 @@ const tutors = [
   {
     name: "Native Yoruba Coach",
     initials: "NY",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
     rating: "5.0",
     lessons: "85+ lessons",
     rate: "₦10,000",
@@ -33,6 +36,7 @@ const tutors = [
   {
     name: "Yoruba Language Tutor",
     initials: "YL",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80",
     rating: "4.8",
     lessons: "60+ lessons",
     rate: "₦7,500",
@@ -72,37 +76,8 @@ const steps = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#FFF8ED] text-[#17231E]">
-      <header className="border-b border-[#E8DECE] bg-[#FFF8ED]">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-12">
-          <Link href="/" className="flex items-center" aria-label="ÀWA YORÙBÁ home">
-            <Image
-              src="/logo.svg"
-              alt="ÀWA YORÙBÁ"
-              width={77}
-              height={68}
-              priority
-              className="h-12 w-auto object-contain sm:h-14"
-            />
-          </Link>
-
-          <nav className="hidden items-center gap-7 text-sm font-semibold text-[#3C473F] lg:flex">
-            <a href="#tutors" className="transition hover:text-[#114B33]">Find a Tutor</a>
-            <a href="#how-it-works" className="transition hover:text-[#114B33]">How It Works</a>
-            <a href="#challenge" className="transition hover:text-[#114B33]">Yoruba Challenge</a>
-            <a href="#for-tutors" className="transition hover:text-[#114B33]">For Tutors</a>
-          </nav>
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link href="/login" className="hidden rounded-full px-4 py-2.5 text-sm font-semibold text-[#114B33] sm:inline-flex">
-              Sign in
-            </Link>
-            <Link href="/signup" className="rounded-full bg-[#114B33] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#0B3524] sm:px-5">
-              Get started
-            </Link>
-          </div>
-        </div>
-      </header>
+    <main className="min-h-screen bg-[#FFF8ED] pt-[76px] text-[#17231E]">
+      <Navbar />
 
       <section className="overflow-hidden border-b border-[#E8DECE]">
         <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 md:py-24 lg:grid-cols-[1.05fr_0.95fr] lg:px-12 lg:py-28">
@@ -246,7 +221,13 @@ export default function Home() {
             {tutors.map((tutor) => (
               <article key={tutor.name} className="rounded-3xl border border-[#E4DBCD] bg-[#FFFDF9] p-5 transition hover:-translate-y-1 hover:shadow-lg">
                 <div className="flex h-32 items-end rounded-2xl bg-[#EAF0EA] p-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#114B33] text-sm font-black text-white">{tutor.initials}</div>
+                  <Image
+                    src={tutor.image}
+                    alt={tutor.name}
+                    width={56}
+                    height={56}
+                    className="h-14 w-14 rounded-full object-cover"
+                  />
                 </div>
                 <div className="mt-5 flex items-start justify-between gap-3">
                   <div>
