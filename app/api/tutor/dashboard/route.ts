@@ -41,7 +41,7 @@ export async function GET() {
       }),
       bookings,
       stats: {
-        pendingBookings: bookings.filter((booking) => booking.status === "PENDING").length,
+        pendingBookings: bookings.filter((booking) => ["PENDING", "AWAITING_PAYMENT"].includes(booking.status)).length,
         upcomingBookings: bookings.length,
         completedLessons: completedCount,
       },
