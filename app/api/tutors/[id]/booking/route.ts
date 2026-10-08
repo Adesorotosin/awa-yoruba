@@ -106,19 +106,34 @@ export async function POST(
       );
     }
 
+    // A lesson is 60 minutes. Two bookings conflict whenever:
+    // existing.start < requested.end AND existing.end > requested.start.
     const lessonEnd = new Date(scheduledAt.getTime() + 60 * 60 * 1000);
 
-    const conflictingBooking = await db.booking.findFirst({
+    const possibleConflicts = await db.booking.findMany({
       where: {
         tutorId: tutor.userId,
         scheduledAt: { lt: lessonEnd },
-        status: { notIn: ["CANCELLED", "REJECTED"] },
+        status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
       },
+      select: {
+        id: true,
+        scheduledAt: true,
+        durationMinutes: true,
+      },
+    });
+
+    const conflictingBooking = possibleConflicts.find((booking) => {
+      const existingEnd = new Date(
+        booking.scheduledAt.getTime() + booking.durationMinutes * 60 * 1000,
+      );
+
+      return booking.scheduledAt < lessonEnd && existingEnd > scheduledAt;
     });
 
     if (conflictingBooking) {
       return NextResponse.json(
-        { error: "That time has already been requested. Please choose another slot." },
+        { error: "That time overlaps another lesson request. Please choose another slot." },
         { status: 409 },
       );
     }
