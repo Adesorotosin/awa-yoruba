@@ -16,7 +16,7 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#E8DECE] bg-[#FFF8ED]/95 px-5 py-3 backdrop-blur-md sm:px-8 lg:px-12">
+    <header className="fixed left-0 right-0 top-0 z-50 border-b border-[#E8DECE] bg-[#FFF8ED]/95 px-5 py-3 backdrop-blur-md sm:px-8 lg:px-12">
       <div className="mx-auto flex max-w-7xl items-center justify-between">
         <Link href="/" className="flex items-center" onClick={() => setOpen(false)} aria-label="ÀWA YORÙBÁ home">
           <Image
