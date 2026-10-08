@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 
 export async function GET(
@@ -49,23 +50,22 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const body = await request.json();
+    const user = await requireUser();
 
-    const name = String(body.name ?? "").trim();
-    const email = String(body.email ?? "").trim().toLowerCase();
+    if (user.role !== "LEARNER") {
+      return NextResponse.json({ error: "Only learner accounts can create bookings." }, { status: 403 });
+    }
+
+    const body = await request.json();
     const date = String(body.date ?? "").trim();
     const time = String(body.time ?? "").trim();
     const notes = String(body.notes ?? "").trim();
 
-    if (!name || !email || !date || !time) {
+    if (!date || !time) {
       return NextResponse.json(
-        { error: "Name, email, date and time are required." },
+        { error: "Date and time are required." },
         { status: 400 },
       );
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
     }
 
     const scheduledAt = new Date(`${date}T${time}:00+01:00`);
@@ -138,23 +138,10 @@ export async function POST(
       );
     }
 
-    const user = await db.user.upsert({
-      where: { email },
-      update: { name },
-      create: { name, email, role: "LEARNER" },
-    });
-
-    if (user.role === "TUTOR") {
-      return NextResponse.json(
-        { error: "A tutor account cannot create a learner booking with this email." },
-        { status: 400 },
-      );
-    }
-
     const learnerProfile = await db.learnerProfile.upsert({
       where: { userId: user.id },
-      update: { displayName: name },
-      create: { userId: user.id, displayName: name },
+      update: {},
+      create: { userId: user.id, displayName: user.name ?? "Learner" },
     });
 
     const booking = await db.booking.create({
