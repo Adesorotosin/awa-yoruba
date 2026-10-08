@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireUser } from "@/lib/auth";
+import { getCurrentUser, requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 
 export async function GET(
@@ -37,7 +37,18 @@ export async function GET(
       return NextResponse.json({ error: "Tutor not found." }, { status: 404 });
     }
 
-    return NextResponse.json({ tutor });
+    const currentUser = await getCurrentUser();
+
+    return NextResponse.json({
+      tutor,
+      learner: currentUser?.role === "LEARNER"
+        ? {
+            id: currentUser.id,
+            name: currentUser.name,
+            email: currentUser.email,
+          }
+        : null,
+    });
   } catch (error) {
     console.error("Tutor booking GET error:", error);
     return NextResponse.json({ error: "Unable to load booking details." }, { status: 500 });
