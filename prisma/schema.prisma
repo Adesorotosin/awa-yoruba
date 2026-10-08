@@ -277,45 +277,55 @@ model ChallengeAttempt {
   id             String          @id @default(cuid())
   challengeId    String
   challenge      Challenge       @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  userId         String
-  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String?
+  user           User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guestSessionId String?
+  guestSession   GuestSession?   @relation(fields: [guestSessionId], references: [id], onDelete: Cascade)
   score          Int              @default(0)
   totalQuestions Int              @default(0)
   rewardAmount   Int              @default(0)
   status         String          @default("COMPLETED")
   completedAt    DateTime        @default(now())
 
+  learningCredit LearningCredit?
+
   @@unique([challengeId, userId])
+  @@unique([challengeId, guestSessionId])
+  @@index([userId])
+  @@index([guestSessionId])
 }
 
 model LearningCredit {
-  id          String    @id @default(cuid())
+  id          String            @id @default(cuid())
   userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   amount      Int
-  currency    String    @default("NGN")
+  currency    String            @default("NGN")
   source      String
-  attemptId   String?
+  attemptId   String?           @unique
+  attempt     ChallengeAttempt? @relation(fields: [attemptId], references: [id], onDelete: SetNull)
   bookingId   String?
-  booking     Booking?  @relation(fields: [bookingId], references: [id], onDelete: SetNull)
-  status      String    @default("AVAILABLE")
+  booking     Booking?          @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  status      String            @default("AVAILABLE")
   expiresAt   DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
   @@index([userId, status])
 }
 
 model GuestSession {
-  id            String    @id @default(cuid())
-  sessionToken  String    @unique
-  userId        String?   @unique
-  user          User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  pendingPoints Int       @default(0)
+  id            String             @id @default(cuid())
+  sessionToken  String             @unique
+  userId        String?            @unique
+  user          User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  pendingPoints Int                @default(0)
   expiresAt     DateTime
-  isClaimed     Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  isClaimed     Boolean            @default(false)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  challengeAttempts ChallengeAttempt[]
 }
 
 model TrialBooking {
