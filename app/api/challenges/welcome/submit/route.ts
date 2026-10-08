@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getOrCreateGuestSession } from "@/lib/guestSession";
+import { getCurrentUser } from "@/lib/auth";
+import { claimGuestLearningCredit } from "@/lib/learningCredits";
 
 type SubmittedAnswer = {
   questionId: string;
@@ -214,6 +216,11 @@ export async function POST(req: Request) {
       );
     }
 
+    const currentUser = await getCurrentUser();
+    const claim = currentUser?.role === "LEARNER"
+      ? await claimGuestLearningCredit(currentUser.id)
+      : { claimed: false, amount: 0 };
+
     return NextResponse.json({
       success: true,
       score: attempt.attempt.score,
@@ -225,7 +232,8 @@ export async function POST(req: Request) {
         rewardAmount > 0
           ? `You earned ₦${rewardAmount.toLocaleString()} in learning credit.`
           : "You completed the challenge. Keep learning and try again when you reach a new level.",
-      claimRequired: true,
+      claimRequired: !claim.claimed,
+      creditClaimed: claim.claimed,
       attemptId: attempt.attempt.id,
     });
   } catch (error) {
