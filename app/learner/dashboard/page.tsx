@@ -71,17 +71,20 @@ export default function LearnerDashboardPage() {
   const greeting = data.learner.name ? "Àkàbọ̀, " + data.learner.name + "." : "Àkàbọ̀.";
 
   return <main className="min-h-screen bg-[#FFF8ED] text-[#241C16]">
-    <header className="border-b border-[#E8DECE] bg-white">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-        <Link href="/" className="flex items-center gap-2"><Image src="/logo.svg" alt="AWA Yoruba" width={132} height={40} priority /></Link>
-        <div className="flex items-center gap-3">
+    <header className="fixed left-0 right-0 top-0 z-50 border-b border-[#E8DECE] bg-white/95 backdrop-blur-md">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
+        <Link href="/" className="flex items-center">
+          <Image src="/logo.svg" alt="AWA Yoruba" width={104} height={32} priority className="h-7 w-auto" />
+        </Link>
+        <div className="flex items-center gap-2 sm:gap-4">
           <Link href="/tutors" className="hidden text-sm font-bold text-[#114B33] sm:inline">Find a tutor</Link>
-          <button onClick={logout} className="rounded-xl border border-[#DCCFBD] px-4 py-2 text-sm font-bold hover:bg-[#FFF8ED]">Log out</button>
+          <Link href="/challenge" className="hidden text-sm font-bold text-[#114B33] sm:inline">Yoruba Challenge</Link>
+          <button onClick={logout} className="rounded-lg border border-[#DCCFBD] px-3 py-1.5 text-xs font-bold hover:bg-[#FFF8ED] sm:px-4 sm:py-2 sm:text-sm">Log out</button>
         </div>
       </div>
     </header>
 
-    <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8">
+    <div className="mx-auto max-w-7xl px-5 pb-8 pt-[5.5rem] sm:px-8">
       <section className="rounded-3xl bg-[#114B33] p-7 text-white sm:p-9">
         <p className="text-sm font-semibold text-[#DCE9DF]">Learner dashboard</p>
         <h1 className="mt-2 text-3xl font-black sm:text-4xl">{greeting}</h1>
