@@ -46,6 +46,11 @@ export async function GET(
             id: currentUser.id,
             name: currentUser.name,
             email: currentUser.email,
+            children: await db.childProfile.findMany({
+              where: { parentId: currentUser.id },
+              select: { id: true, name: true, age: true },
+              orderBy: { createdAt: "asc" },
+            }),
           }
         : null,
     });
@@ -71,12 +76,30 @@ export async function POST(
     const date = String(body.date ?? "").trim();
     const time = String(body.time ?? "").trim();
     const notes = String(body.notes ?? "").trim();
+    const childProfileId = String(body.childProfileId ?? "").trim();
 
     if (!date || !time) {
       return NextResponse.json(
         { error: "Date and time are required." },
         { status: 400 },
       );
+    }
+
+    const childProfileIdValue = childProfileId || null;
+
+    if (childProfileIdValue) {
+      const child = await db.childProfile.findFirst({
+        where: { id: childProfileIdValue, parentId: user.id },
+        select: { id: true },
+      });
+      if (!child) {
+        return NextResponse.json({ error: "That child profile does not belong to your account." }, { status: 403 });
+      }
+    } else {
+      const childCount = await db.childProfile.count({ where: { parentId: user.id } });
+      if (childCount > 0) {
+        return NextResponse.json({ error: "Select which child this lesson is for." }, { status: 400 });
+      }
     }
 
     const scheduledAt = new Date(`${date}T${time}:00+01:00`);
@@ -159,6 +182,7 @@ export async function POST(
       data: {
         learnerId: user.id,
         learnerProfileId: learnerProfile.id,
+        childProfileId: childProfileIdValue,
         tutorId: tutor.userId,
         tutorProfileId: tutor.id,
         scheduledAt,
