@@ -283,9 +283,10 @@ export default function TutorDashboardPage() {
           )}
         </section>
 
-        <section className="mt-6 grid gap-4 md:grid-cols-3">
+        <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <QuickLink href={`/tutor/profile?tutorId=${data.tutor.id}`} icon={<UserRound className="h-5 w-5" />} title="Edit profile" text="Update your photo, bio, rate and teaching details." />
           <QuickLink href={`/tutor/availability?tutorId=${data.tutor.id}`} icon={<CalendarDays className="h-5 w-5" />} title="Availability" text="Set when learners can book you." />
-          <QuickLink href={`/tutors/${data.tutor.id}`} icon={<UserRound className="h-5 w-5" />} title="Public profile" text="See what learners currently see." />
+          <QuickLink href={`/tutors/${data.tutor.id}`} icon={<ExternalLink className="h-5 w-5" />} title="Public profile" text="See what learners currently see." />
           <QuickLink href="/challenge" icon={<GraduationCap className="h-5 w-5" />} title="Yoruba Challenge" text="Try the learner acquisition experience." />
         </section>
       </section>
