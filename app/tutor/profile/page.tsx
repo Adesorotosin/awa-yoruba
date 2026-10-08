@@ -23,7 +23,6 @@ const MAX_PHOTO_SIZE = 5 * 1024 * 1024;
 const ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export default function TutorProfileEditor() {
-  const [tutorId, setTutorId] = useState("");
   const [profile, setProfile] = useState<Profile | null>(null);
   const [form, setForm] = useState({
     displayName: "",
@@ -44,21 +43,12 @@ export default function TutorProfileEditor() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const id = new URLSearchParams(window.location.search).get("tutorId") ?? "";
-    setTutorId(id);
-
-    if (!id) {
-      setLoading(false);
-      setError("Tutor profile ID is missing from the URL.");
-      return;
-    }
-
-    void loadProfile(id);
+    void loadProfile();
   }, []);
 
-  async function loadProfile(id: string) {
+  async function loadProfile() {
     try {
-      const response = await fetch(`/api/tutor/profile?tutorId=${encodeURIComponent(id)}`);
+      const response = await fetch("/api/tutor/profile");
       const result = await response.json();
 
       if (!response.ok) throw new Error(result.error ?? "Unable to load profile.");
@@ -159,7 +149,7 @@ export default function TutorProfileEditor() {
       const response = await fetch("/api/tutor/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tutorId, ...form }),
+        body: JSON.stringify(form),
       });
 
       const result = await response.json();
@@ -186,14 +176,12 @@ export default function TutorProfileEditor() {
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#B07B22]">AWA Yoruba</p>
             <h1 className="mt-1 text-xl font-black">Edit tutor profile</h1>
           </div>
-          {tutorId && (
             <Link
-              href={`/tutor/dashboard?tutorId=${tutorId}`}
+              href="/tutor/dashboard"
               className="inline-flex items-center gap-2 rounded-full border border-[#D7CCBD] px-4 py-2 text-sm font-bold text-[#114B33]"
             >
               <ArrowLeft className="h-4 w-4" /> Dashboard
             </Link>
-          )}
         </div>
       </header>
 
@@ -298,7 +286,7 @@ export default function TutorProfileEditor() {
 
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
             <Link
-              href={tutorId ? `/tutors/${tutorId}` : "/tutors"}
+              href="/tutors"
               className="inline-flex items-center justify-center rounded-xl border border-[#CFC3B2] px-5 py-3 text-sm font-black text-[#114B33]"
             >
               View profile
