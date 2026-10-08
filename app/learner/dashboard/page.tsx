@@ -122,7 +122,13 @@ export default function LearnerDashboardPage() {
         <StatCard label="Learning credit" value={money(data.stats.availableCredit)} detail="Available toward learning" />
       </section>
 
-      <section className="mt-8 rounded-3xl border border-[#E8DECE] bg-white p-6 sm:p-7">\n        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">\n          <div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Your family</p><h2 className="mt-2 text-2xl font-black">Children learning Yoruba</h2><p className="mt-2 text-sm text-[#6B5B4B]">Each child can have their own level, lessons, and learning journey.</p></div>\n          <Link href="/learner/dashboard#add-child" className="inline-flex rounded-xl bg-[#114B33] px-4 py-2.5 text-sm font-black text-white">Add a child</Link>\n        </div>\n        {data.children.length === 0 ? <div className="mt-5 rounded-2xl bg-[#FFF8ED] p-5"><p className="font-bold">Start with your child’s profile.</p><p className="mt-1 text-sm text-[#6B5B4B]">Add your child so AWA Yoruba can personalize lessons and progress around them.</p><Link href="/learner/dashboard#add-child" className="mt-4 inline-block font-black text-[#114B33]">Add child →</Link></div> : <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{data.children.map((child) => <div key={child.id} className="rounded-2xl border border-[#E8DECE] p-5"><p className="text-lg font-black">{child.name}</p>{child.age && <p className="mt-1 text-sm text-[#6B5B4B]">Age {child.age}</p>}<div className="mt-4 rounded-xl bg-[#FFF8ED] p-3"><p className="text-xs font-bold uppercase tracking-wide text-[#8A7968]">Current level</p><p className="mt-1 font-black text-[#114B33]">{child.currentLevel?.name ?? "Not assessed yet"}</p></div><Link href="/tutors" className="mt-4 inline-block text-sm font-black text-[#114B33]">Find a tutor →</Link></div>)}</div>}\n        <form onSubmit={addChild} className="mt-6 rounded-2xl border border-dashed border-[#DCCFBD] bg-[#FFFDF9] p-5">
+      <section className="mt-8 rounded-3xl border border-[#E8DECE] bg-white p-6 sm:p-7">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Your family</p><h2 className="mt-2 text-2xl font-black">Children learning Yoruba</h2><p className="mt-2 text-sm text-[#6B5B4B]">Each child can have their own level, lessons, and learning journey.</p></div>
+          <Link href="/learner/dashboard#add-child" className="inline-flex rounded-xl bg-[#114B33] px-4 py-2.5 text-sm font-black text-white">Add a child</Link>
+        </div>
+        {data.children.length === 0 ? <div className="mt-5 rounded-2xl bg-[#FFF8ED] p-5"><p className="font-bold">Start with your child’s profile.</p><p className="mt-1 text-sm text-[#6B5B4B]">Add your child so AWA Yoruba can personalize lessons and progress around them.</p><Link href="/learner/dashboard#add-child" className="mt-4 inline-block font-black text-[#114B33]">Add child →</Link></div> : <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{data.children.map((child) => <div key={child.id} className="rounded-2xl border border-[#E8DECE] p-5"><p className="text-lg font-black">{child.name}</p>{child.age && <p className="mt-1 text-sm text-[#6B5B4B]">Age {child.age}</p>}<div className="mt-4 rounded-xl bg-[#FFF8ED] p-3"><p className="text-xs font-bold uppercase tracking-wide text-[#8A7968]">Current level</p><p className="mt-1 font-black text-[#114B33]">{child.currentLevel?.name ?? "Not assessed yet"}</p></div><Link href="/tutors" className="mt-4 inline-block text-sm font-black text-[#114B33]">Find a tutor →</Link></div>)}</div>}
+        <form onSubmit={addChild} className="mt-6 rounded-2xl border border-dashed border-[#DCCFBD] bg-[#FFFDF9] p-5">
           <p className="font-black">Add a child</p>
           <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_140px_auto]">
             <input value={childName} onChange={(e) => setChildName(e.target.value)} required placeholder="Child's name" className="rounded-xl border border-[#DCCFBD] bg-white px-4 py-3 text-sm outline-none focus:border-[#114B33]" />
@@ -130,7 +136,10 @@ export default function LearnerDashboardPage() {
             <button disabled={addingChild} type="submit" className="rounded-xl bg-[#114B33] px-5 py-3 text-sm font-black text-white disabled:opacity-60">{addingChild ? "Adding..." : "Add child"}</button>
           </div>
           {childError && <p className="mt-3 text-sm font-semibold text-red-700">{childError}</p>}
-        </form>\n      </section>\n\n      <section className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_.8fr]">
+        </form>
+      </section>
+
+      <section className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_.8fr]">
         <div className="rounded-3xl border border-[#E8DECE] bg-white p-6 sm:p-7">
           <div className="flex items-center justify-between gap-4">
             <div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Your family lessons</p><h2 className="mt-2 text-2xl font-black">Upcoming & recent bookings</h2></div>
