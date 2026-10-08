@@ -57,8 +57,8 @@ export default function TutorBookingPage({ params }: { params: Promise<{ id: str
   const [tutor, setTutor] = useState<Tutor | null>(null);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [learnerName, setLearnerName] = useState("");
+  const [learnerEmail, setLearnerEmail] = useState("");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -88,6 +88,32 @@ export default function TutorBookingPage({ params }: { params: Promise<{ id: str
     void loadTutor();
   }, [tutorId]);
 
+  useEffect(() => {
+    async function loadLearner() {
+      try {
+        const response = await fetch("/api/auth/me");
+        const data = await response.json();
+
+        if (!response.ok || !data.user) {
+          window.location.href = `/login?redirect=/tutors/${tutorId}/book`;
+          return;
+        }
+
+        if (data.user.role !== "LEARNER") {
+          setError("Only learner accounts can book a lesson.");
+          return;
+        }
+
+        setLearnerName(data.user.name ?? "");
+        setLearnerEmail(data.user.email ?? "");
+      } catch {
+        setError("Unable to verify your learner account.");
+      }
+    }
+
+    if (tutorId) void loadLearner();
+  }, [tutorId]);
+
   const availableDates = useMemo(() => {
     if (!tutor) return [];
     const today = new Date();
@@ -113,7 +139,7 @@ export default function TutorBookingPage({ params }: { params: Promise<{ id: str
       const response = await fetch(`/api/tutors/${tutorId}/book`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, date, time, notes }),
+        body: JSON.stringify({ date, time, notes }),
       });
 
       const data = await response.json();
@@ -177,19 +203,14 @@ export default function TutorBookingPage({ params }: { params: Promise<{ id: str
           <form onSubmit={submitBooking} className="rounded-3xl border border-[#E4DBCD] bg-white p-6 shadow-sm sm:p-8">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#B07B22]">Book a lesson</p>
             <h1 className="mt-3 text-3xl font-black">Book with {tutor.displayName ?? "this tutor"}.</h1>
-            <p className="mt-3 text-sm leading-6 text-[#666B65]">Choose an available time and tell us where to reach you. Payment will be connected after the booking request is created.</p>
+            <p className="mt-3 text-sm leading-6 text-[#666B65]">Choose an available time and tell us what you want to learn. Your booking will be attached to your signed-in learner account.</p>
 
             {error && <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>}
 
-            <div className="mt-7 grid gap-5 sm:grid-cols-2">
-              <label className="block">
-                <span className="text-sm font-bold">Your name</span>
-                <input value={name} onChange={(event) => setName(event.target.value)} required className="mt-2 w-full rounded-xl border border-[#DCCFBD] bg-[#FFFDF9] px-4 py-3 outline-none focus:border-[#114B33]" placeholder="Full name" />
-              </label>
-              <label className="block">
-                <span className="text-sm font-bold">Email</span>
-                <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" required className="mt-2 w-full rounded-xl border border-[#DCCFBD] bg-[#FFFDF9] px-4 py-3 outline-none focus:border-[#114B33]" placeholder="you@example.com" />
-              </label>
+            <div className="mt-7 rounded-2xl border border-[#DCCFBD] bg-[#FFF8ED] p-4">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Booking as</p>
+              <p className="mt-2 font-black text-[#241C16]">{learnerName || "Your learner account"}</p>
+              <p className="mt-1 text-sm text-[#6B5B4B]">{learnerEmail || "Signed-in learner"}</p>
             </div>
 
             <div className="mt-5">
@@ -218,7 +239,7 @@ export default function TutorBookingPage({ params }: { params: Promise<{ id: str
               <textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={4} className="mt-2 w-full resize-none rounded-xl border border-[#DCCFBD] bg-[#FFFDF9] px-4 py-3 outline-none focus:border-[#114B33]" placeholder="Tell the tutor what you want to learn..." />
             </label>
 
-            <button disabled={submitting || !availableDates.length} type="submit" className="mt-7 w-full rounded-xl bg-[#114B33] px-5 py-3.5 text-sm font-black text-white hover:bg-[#0B3524] disabled:cursor-not-allowed disabled:opacity-60">
+            <button disabled={submitting || !availableDates.length || !learnerEmail} type="submit" className="mt-7 w-full rounded-xl bg-[#114B33] px-5 py-3.5 text-sm font-black text-white hover:bg-[#0B3524] disabled:cursor-not-allowed disabled:opacity-60">
               {submitting ? "Creating booking..." : "Request this lesson"}
             </button>
           </form>
