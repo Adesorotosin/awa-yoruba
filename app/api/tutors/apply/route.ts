@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { setPassword } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
@@ -8,6 +9,7 @@ export async function POST(request: Request) {
     const name = String(formData.get("name") ?? "").trim();
     const email = String(formData.get("email") ?? "").trim().toLowerCase();
     const phone = String(formData.get("phone") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
     const experienceYears = Number(formData.get("experienceYears"));
     const specialties = String(formData.get("specialties") ?? "").trim();
     const languages = String(formData.get("languages") ?? "").trim();
@@ -19,6 +21,7 @@ export async function POST(request: Request) {
       !name ||
       !email ||
       !phone ||
+      password.length < 8 ||
       !Number.isInteger(experienceYears) ||
       experienceYears < 0 ||
       !specialties ||
@@ -53,6 +56,8 @@ export async function POST(request: Request) {
             role: "TUTOR",
           },
         });
+
+    await setPassword(user.id, password);
 
     await db.tutorProfile.create({
       data: {
