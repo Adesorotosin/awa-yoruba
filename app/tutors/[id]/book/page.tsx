@@ -118,7 +118,7 @@ export default function TutorBookingPage({ params }: { params: Promise<{ id: str
     setSuccess(null);
 
     try {
-      const response = await fetch(`/api/tutors/${tutorId}/book`, {
+      const response = await fetch(`/api/tutors/${tutorId}/booking`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ date, time, notes }),
