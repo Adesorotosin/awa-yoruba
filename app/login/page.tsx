@@ -15,7 +15,7 @@ export default function LoginPage() {
       const response=await fetch("/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
       const data=await response.json();
       if(!response.ok) throw new Error(data.error ?? "Unable to log in.");
-      window.location.href=data.user.role==="TUTOR" ? "/tutor/dashboard" : "/tutors";
+      window.location.href = data.user.role === "TUTOR" ? "/tutor/dashboard" : data.user.role === "LEARNER" ? "/learner/dashboard" : "/admin";
     }catch(err){setError(err instanceof Error?err.message:"Unable to log in.");}finally{setLoading(false);}
   }
 
