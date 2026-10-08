@@ -128,9 +128,13 @@ export default function Home() {
                 {tutors.map((tutor) => (
                   <div key={tutor.name} className="rounded-2xl border border-[#E9E2D7] p-4 transition hover:border-[#B8C8BC] hover:shadow-sm">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#114B33] text-xs font-black text-white">
-                        {tutor.initials}
-                      </div>
+                      <Image
+                        src={tutor.image}
+                        alt={tutor.name}
+                        width={48}
+                        height={48}
+                        className="h-12 w-12 shrink-0 rounded-full object-cover"
+                      />
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-bold text-[#17231E]">{tutor.name}</p>
                         <p className="mt-1 text-xs text-[#767A74]">{tutor.specialty}</p>
