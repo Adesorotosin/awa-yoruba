@@ -78,6 +78,14 @@ export default function TutorBookingPage({ params }: { params: Promise<{ id: str
         const data = await response.json();
         if (!response.ok) throw new Error(data.error ?? "Unable to load tutor.");
         setTutor(data.tutor);
+
+        if (!data.learner) {
+          window.location.href = `/login?redirect=/tutors/${tutorId}/book`;
+          return;
+        }
+
+        setLearnerName(data.learner.name ?? "");
+        setLearnerEmail(data.learner.email ?? "");
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unable to load tutor.");
       } finally {
@@ -86,32 +94,6 @@ export default function TutorBookingPage({ params }: { params: Promise<{ id: str
     }
 
     void loadTutor();
-  }, [tutorId]);
-
-  useEffect(() => {
-    async function loadLearner() {
-      try {
-        const response = await fetch("/api/auth/me");
-        const data = await response.json();
-
-        if (!response.ok || !data.user) {
-          window.location.href = `/login?redirect=/tutors/${tutorId}/book`;
-          return;
-        }
-
-        if (data.user.role !== "LEARNER") {
-          setError("Only learner accounts can book a lesson.");
-          return;
-        }
-
-        setLearnerName(data.user.name ?? "");
-        setLearnerEmail(data.user.email ?? "");
-      } catch {
-        setError("Unable to verify your learner account.");
-      }
-    }
-
-    if (tutorId) void loadLearner();
   }, [tutorId]);
 
   const availableDates = useMemo(() => {
