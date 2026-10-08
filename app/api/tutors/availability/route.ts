@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { requireTutor } from "@/lib/auth";
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -38,6 +39,18 @@ async function getTutorProfile(tutorId: string) {
 export async function GET(request: Request) {
   try {
     const tutorId = getTutorId(request);
+    if (tutorId !== user.tutorProfile!.id) {
+      return NextResponse.json({ error: "You can only edit your own availability." }, { status: 403 });
+    }
+
+    if (tutorId !== user.tutorProfile!.id) {
+      return NextResponse.json({ error: "You can only edit your own availability." }, { status: 403 });
+    }
+
+    if (tutorId !== user.tutorProfile!.id) {
+      return NextResponse.json({ error: "You can only edit your own availability." }, { status: 403 });
+    }
+
     const tutor = await getTutorProfile(tutorId);
 
     if (!tutor) {
@@ -58,6 +71,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const user = await requireTutor();
     const body = (await request.json()) as Record<string, unknown>;
     const tutorId = getTutorId(request, body);
     const dayOfWeek = Number(body.dayOfWeek);
@@ -125,6 +139,7 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
+    const user = await requireTutor();
     const body = (await request.json()) as Record<string, unknown>;
     const tutorId = getTutorId(request, body);
     const availabilityId = String(body.availabilityId ?? "").trim();
@@ -185,6 +200,7 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
+    const user = await requireTutor();
     const body = (await request.json()) as Record<string, unknown>;
     const tutorId = getTutorId(request, body);
     const availabilityId = String(body.availabilityId ?? "").trim();
