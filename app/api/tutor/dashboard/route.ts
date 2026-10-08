@@ -11,7 +11,7 @@ export async function GET() {
       where: {
         tutorId: user.id,
         scheduledAt: { gte: new Date() },
-        status: { in: ["PENDING", "CONFIRMED"] },
+        status: { in: ["PENDING", "AWAITING_PAYMENT", "CONFIRMED"] },
       },
       include: { learner: true, learnerProfile: true, childProfile: true },
       orderBy: { scheduledAt: "asc" },
