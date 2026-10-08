@@ -1,168 +1,61 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
 export default function Navbar() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
+  const [open, setOpen] = useState(false);
 
-  const navLinks = [
-    { name: "Home", href: "#why-us" },
-    { name: "How It Works", href: "#how-it-works" },
-    { name: "Programs", href: "#programs" },
-    { name: "Stories", href: "#reviews" },
-    { name: "For Parents", href: "#for-parents" },
-    { name: "About", href: "#about" },
+  const links = [
+    { label: "Find a Tutor", href: "/tutors" },
+    { label: "How It Works", href: "/#how-it-works" },
+    { label: "Yoruba Challenge", href: "/challenge" },
+    { label: "For Tutors", href: "/#for-tutors" },
   ];
 
-  // Smooth scroll handler
-  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const targetId = href.replace("#", "");
-    const elem = document.getElementById(targetId);
-
-    if (elem) {
-      elem.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-      setIsMobileMenuOpen(false); // Close mobile drawer
-    }
-  };
-
-  // Active state observer for section highlighting on scroll
-  useEffect(() => {
-    const sectionIds = navLinks.map((link) => link.href.replace("#", ""));
-    const observerOptions = {
-      root: null,
-      rootMargin: "-20% 0px -60% 0px", // Triggers when section enters top part of viewport
-      threshold: 0,
-    };
-
-    const handleIntersection: IntersectionObserverCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(handleIntersection, observerOptions);
-
-    sectionIds.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <header className="sticky top-0 z-50 bg-[#FFF8ED]/95 backdrop-blur-md border-b border-[#EBE3D5] px-4 sm:px-6 lg:px-16 py-3 font-sans transition-all">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        
-        {/* Logo Container */}
-        <Link href="/" className="flex items-center py-1">
-          <Image
-            src="/logo.svg"
-            alt="ÀWA YORÙBÁ Logo"
-            width={180}
-            height={60}
-            className="h-10 sm:h-12 md:h-14 w-auto object-contain"
-            priority
-          />
+    <header className="sticky top-0 z-50 border-b border-[#E8DECE] bg-[#FFF8ED]/95 px-5 py-3 backdrop-blur-md sm:px-8 lg:px-12">
+      <div className="mx-auto flex max-w-7xl items-center justify-between">
+        <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#114B33] text-sm font-black text-white">À</div>
+          <div>
+            <div className="text-base font-black tracking-wide text-[#114B33]">AWA YORUBA</div>
+            <div className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8A806F]">Learn · Speak · Belong</div>
+          </div>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-medium text-[#1A2621]">
-          {navLinks.map((link, idx) => {
-            const isActive = activeSection === link.href.replace("#", "");
-            return (
-              <a
-                key={idx}
-                href={link.href}
-                onClick={(e) => handleScroll(e, link.href)}
-                className={`transition-colors cursor-pointer relative py-1 ${
-                  isActive
-                    ? "text-[#114B33] font-bold"
-                    : "hover:text-[#114B33] text-[#1A2621]"
-                }`}
-              >
-                {link.name}
-                {isActive && (
-                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#114B33] rounded-full" />
-                )}
-              </a>
-            );
-          })}
+        <nav className="hidden items-center gap-7 text-sm font-semibold text-[#3C473F] lg:flex">
+          {links.map((link) => (
+            <Link key={link.href} href={link.href} className="transition hover:text-[#114B33]">
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
-        {/* Action Buttons & Hamburger Toggle */}
-        <div className="flex items-center gap-3 sm:gap-4">
-          
-          {/* Desktop CTA Button */}
-          <a
-            href="#trial"
-            onClick={(e) => handleScroll(e, "#trial")}
-            className="hidden sm:inline-flex bg-[#114B33] hover:bg-[#0B3524] text-white text-xs sm:text-sm font-semibold px-4 sm:px-6 py-2.5 rounded-full transition-all duration-200 shadow-sm cursor-pointer"
-          >
-            Book Free Trial
-          </a>
-
-          {/* Mobile Hamburger Toggle Button */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Link href="/login" className="hidden px-3 py-2.5 text-sm font-semibold text-[#114B33] sm:inline-flex">Sign in</Link>
+          <Link href="/signup" className="rounded-full bg-[#114B33] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#0B3524] sm:px-5">Get started</Link>
           <button
             type="button"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 text-[#1A2621] hover:text-[#114B33] hover:bg-[#F5EAD7] rounded-xl transition-colors focus:outline-none"
-            aria-label="Toggle Navigation Menu"
+            aria-label={open ? "Close navigation" : "Open navigation"}
+            onClick={() => setOpen((value) => !value)}
+            className="rounded-xl p-2 text-[#114B33] hover:bg-[#F5EAD7] lg:hidden"
           >
-            {isMobileMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
-
       </div>
 
-      {/* Mobile/Tablet Dropdown Navigation Drawer */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden bg-[#FFF8ED] border-b border-[#EBE3D5] px-4 sm:px-6 pt-4 pb-6 space-y-4 shadow-lg animate-in slide-in-from-top-2 duration-200">
-          <nav className="flex flex-col space-y-1 text-base font-medium text-[#1A2621]">
-            {navLinks.map((link, idx) => {
-              const isActive = activeSection === link.href.replace("#", "");
-              return (
-                <a
-                  key={idx}
-                  href={link.href}
-                  onClick={(e) => handleScroll(e, link.href)}
-                  className={`py-2.5 px-3 rounded-lg transition-colors cursor-pointer ${
-                    isActive
-                      ? "bg-[#F5EAD7] text-[#114B33] font-bold"
-                      : "hover:bg-[#F5EAD7] hover:text-[#114B33]"
-                  }`}
-                >
-                  {link.name}
-                </a>
-              );
-            })}
-          </nav>
-
-          {/* Mobile CTA */}
-          <div className="pt-2 sm:hidden">
-            <a
-              href="#trial"
-              onClick={(e) => handleScroll(e, "#trial")}
-              className="block text-center bg-[#114B33] hover:bg-[#0B3524] text-white text-sm font-semibold px-6 py-3 rounded-full transition-all duration-200 shadow-sm w-full cursor-pointer"
-            >
-              Book Free Trial
-            </a>
-          </div>
-        </div>
+      {open && (
+        <nav className="mx-auto flex max-w-7xl flex-col gap-1 border-t border-[#E8DECE] pb-2 pt-4 lg:hidden">
+          {links.map((link) => (
+            <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-sm font-semibold text-[#3C473F] hover:bg-[#F5EAD7] hover:text-[#114B33]">
+              {link.label}
+            </Link>
+          ))}
+          <Link href="/login" onClick={() => setOpen(false)} className="mt-2 rounded-xl px-3 py-3 text-sm font-semibold text-[#114B33] hover:bg-[#F5EAD7]">Sign in</Link>
+        </nav>
       )}
     </header>
   );
