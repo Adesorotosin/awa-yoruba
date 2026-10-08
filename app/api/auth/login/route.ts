@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSession, verifyUserPassword } from "@/lib/auth";
+import { claimGuestLearningCredit } from "@/lib/learningCredits";
 
 export async function POST(request: Request) {
   try {
@@ -15,6 +16,8 @@ export async function POST(request: Request) {
     if (!user) {
       return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
     }
+
+    await claimGuestLearningCredit(user.id);
 
     await createSession(user.id);
 
