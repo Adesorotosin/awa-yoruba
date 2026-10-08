@@ -125,7 +125,7 @@ export async function POST(
       where: {
         tutorId: tutor.userId,
         scheduledAt: { lt: lessonEnd },
-        status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
+        status: { in: ["PENDING", "AWAITING_PAYMENT", "CONFIRMED", "COMPLETED"] },
       },
       select: {
         id: true,
