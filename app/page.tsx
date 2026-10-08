@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -74,14 +75,15 @@ export default function Home() {
     <main className="min-h-screen bg-[#FFF8ED] text-[#17231E]">
       <header className="border-b border-[#E8DECE] bg-[#FFF8ED]">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-12">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#114B33] text-sm font-black text-white">
-              À
-            </div>
-            <div>
-              <div className="text-base font-black tracking-wide text-[#114B33]">AWA YORUBA</div>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8A806F]">Learn · Speak · Belong</div>
-            </div>
+          <Link href="/" className="flex items-center" aria-label="ÀWA YORÙBÁ home">
+            <Image
+              src="/logo.svg"
+              alt="ÀWA YORÙBÁ"
+              width={77}
+              height={68}
+              priority
+              className="h-12 w-auto object-contain sm:h-14"
+            />
           </Link>
 
           <nav className="hidden items-center gap-7 text-sm font-semibold text-[#3C473F] lg:flex">
@@ -311,7 +313,13 @@ export default function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col justify-between gap-8 sm:flex-row">
             <div>
-              <div className="text-lg font-black tracking-wide text-white">AWA YORUBA</div>
+              <Image
+                src="/logo.svg"
+                alt="ÀWA YORÙBÁ"
+                width={77}
+                height={68}
+                className="h-14 w-auto object-contain"
+              />
               <p className="mt-3 max-w-sm text-sm leading-6 text-[#8E8E8E]">A marketplace connecting Yoruba learners with tutors who can help them learn, speak and belong.</p>
             </div>
             <div className="grid grid-cols-2 gap-x-10 gap-y-3 text-sm sm:grid-cols-3">
