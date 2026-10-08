@@ -137,7 +137,7 @@ export default function TutorDashboardPage() {
   );
 
   const upcomingBookings = useMemo(
-    () => data?.bookings.filter((booking) => booking.status === "CONFIRMED") ?? [],
+    () => data?.bookings.filter((booking) => ["AWAITING_PAYMENT", "CONFIRMED"].includes(booking.status)) ?? [],
     [data],
   );
 
@@ -350,7 +350,7 @@ function BookingCard({
               <XCircle className="h-4 w-4" /> Decline
             </button>
           </>
-        ) : (
+        ) : booking.status === "CONFIRMED" ? (
           <button disabled={busy} onClick={() => onAction(booking.id, "complete")} className="inline-flex items-center gap-2 rounded-xl border border-[#CFC3B2] px-4 py-2.5 text-sm font-black text-[#114B33] disabled:opacity-50">
             <CheckCircle2 className="h-4 w-4" /> {busy ? "Updating..." : "Mark completed"}
           </button>
