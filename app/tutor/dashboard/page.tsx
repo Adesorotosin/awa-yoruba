@@ -354,7 +354,7 @@ function BookingCard({
           <button disabled={busy} onClick={() => onAction(booking.id, "complete")} className="inline-flex items-center gap-2 rounded-xl border border-[#CFC3B2] px-4 py-2.5 text-sm font-black text-[#114B33] disabled:opacity-50">
             <CheckCircle2 className="h-4 w-4" /> {busy ? "Updating..." : "Mark completed"}
           </button>
-        )}
+        ) : null}
         <Link href="/tutors" className="inline-flex items-center gap-2 rounded-xl border border-[#CFC3B2] px-4 py-2.5 text-sm font-bold text-[#114B33]">
           <ExternalLink className="h-4 w-4" /> Profile
         </Link>
