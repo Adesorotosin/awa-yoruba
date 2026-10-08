@@ -9,6 +9,7 @@ type Booking = {
   totalAmount: number; currency: string; status: string; paymentStatus: string;
   tutorProfile?: { id: string; displayName: string | null; photoUrl: string | null; averageRating: number } | null;
   level?: { id: string; name: string } | null;
+  childProfile?: { id: string; name: string; age: number | null; currentLevel?: { id: string; name: string } | null } | null;
 };
 
 type DashboardData = {
@@ -16,6 +17,7 @@ type DashboardData = {
     currentLevel: { id: string; name: string; description: string | null } | null };
   stats: { upcomingLessons: number; pendingBookings: number; completedLessons: number; availableCredit: number };
   bookings: Booking[];
+  children: { id: string; name: string; age: number | null; currentLevel: { id: string; name: string } | null }[];
 };
 
 function money(amount: number, currency = "NGN") {
@@ -86,9 +88,9 @@ export default function LearnerDashboardPage() {
 
     <div className="mx-auto max-w-7xl px-5 pb-8 pt-[8rem] sm:px-8">
       <section className="rounded-3xl bg-[#114B33] p-7 text-white sm:p-9">
-        <p className="text-sm font-semibold text-[#DCE9DF]">Learner dashboard</p>
+        <p className="text-sm font-semibold text-[#DCE9DF]">Parent dashboard</p>
         <h1 className="mt-2 text-3xl font-black sm:text-4xl">{greeting}</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-[#EAF3EC]">Keep your Yoruba learning journey moving. Find a tutor, book your next lesson, and build your confidence one conversation at a time.</p>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-[#EAF3EC]">Help your child build confidence in Yoruba with live lessons, trusted tutors, and a simple view of their progress.</p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link href="/tutors" className="rounded-xl bg-white px-5 py-3 text-sm font-black text-[#114B33]">Find a tutor</Link>
           <Link href="/challenge" className="rounded-xl border border-white/30 px-5 py-3 text-sm font-black text-white">Test your Yoruba</Link>
@@ -96,16 +98,16 @@ export default function LearnerDashboardPage() {
       </section>
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Upcoming lessons" value={data.stats.upcomingLessons} detail="Pending or confirmed" />
+        <StatCard label="Upcoming lessons" value={data.stats.upcomingLessons} detail="For your family" />
         <StatCard label="Pending bookings" value={data.stats.pendingBookings} detail="Waiting for tutor confirmation" />
         <StatCard label="Completed lessons" value={data.stats.completedLessons} detail="Your learning history" />
         <StatCard label="Learning credit" value={money(data.stats.availableCredit)} detail="Available toward learning" />
       </section>
 
-      <section className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_.8fr]">
+      <section className="mt-8 rounded-3xl border border-[#E8DECE] bg-white p-6 sm:p-7">\n        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">\n          <div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Your family</p><h2 className="mt-2 text-2xl font-black">Children learning Yoruba</h2><p className="mt-2 text-sm text-[#6B5B4B]">Each child can have their own level, lessons, and learning journey.</p></div>\n          <Link href="/learner/dashboard#add-child" className="inline-flex rounded-xl bg-[#114B33] px-4 py-2.5 text-sm font-black text-white">Add a child</Link>\n        </div>\n        {data.children.length === 0 ? <div className="mt-5 rounded-2xl bg-[#FFF8ED] p-5"><p className="font-bold">Start with your child’s profile.</p><p className="mt-1 text-sm text-[#6B5B4B]">Add your child so AWA Yoruba can personalize lessons and progress around them.</p><Link href="/learner/dashboard#add-child" className="mt-4 inline-block font-black text-[#114B33]">Add child →</Link></div> : <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{data.children.map((child) => <div key={child.id} className="rounded-2xl border border-[#E8DECE] p-5"><p className="text-lg font-black">{child.name}</p>{child.age && <p className="mt-1 text-sm text-[#6B5B4B]">Age {child.age}</p>}<div className="mt-4 rounded-xl bg-[#FFF8ED] p-3"><p className="text-xs font-bold uppercase tracking-wide text-[#8A7968]">Current level</p><p className="mt-1 font-black text-[#114B33]">{child.currentLevel?.name ?? "Not assessed yet"}</p></div><Link href="/tutors" className="mt-4 inline-block text-sm font-black text-[#114B33]">Find a tutor →</Link></div>)}</div>}\n      </section>\n\n      <section className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_.8fr]">
         <div className="rounded-3xl border border-[#E8DECE] bg-white p-6 sm:p-7">
           <div className="flex items-center justify-between gap-4">
-            <div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Your lessons</p><h2 className="mt-2 text-2xl font-black">Upcoming & recent bookings</h2></div>
+            <div><p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Your family lessons</p><h2 className="mt-2 text-2xl font-black">Upcoming & recent bookings</h2></div>
             <Link href="/tutors" className="text-sm font-black text-[#114B33]">Find tutors →</Link>
           </div>
           {data.bookings.length === 0 ? <div className="mt-6 rounded-2xl bg-[#FFF8ED] p-6 text-center">
@@ -116,7 +118,7 @@ export default function LearnerDashboardPage() {
               <div className="flex items-center gap-3">
                 {booking.tutorProfile?.photoUrl ? <Image src={booking.tutorProfile.photoUrl} alt={booking.tutorProfile.displayName || "Tutor"} width={48} height={48} className="h-12 w-12 rounded-full object-cover" unoptimized /> :
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8F0EA] font-black text-[#114B33]">{(booking.tutorProfile?.displayName || "T").slice(0, 1).toUpperCase()}</div>}
-                <div><p className="font-black">{booking.tutorProfile?.displayName || "Yoruba Tutor"}</p><p className="mt-1 text-sm text-[#6B5B4B]">{formatDate(booking.scheduledAt)}</p></div>
+                <div><p className="font-black">{booking.tutorProfile?.displayName || "Yoruba Tutor"}</p><p className="mt-1 text-sm text-[#6B5B4B]">{formatDate(booking.scheduledAt)}</p>{booking.childProfile && <p className="mt-1 text-xs font-bold text-[#114B33]">For {booking.childProfile.name}</p>}</div>
               </div>
               <div className="sm:text-right">
                 <p className="font-black">{money(booking.totalAmount, booking.currency)}</p>
@@ -136,9 +138,9 @@ export default function LearnerDashboardPage() {
 
         <aside className="space-y-6">
           <div className="rounded-3xl border border-[#E8DECE] bg-white p-6">
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Your learning</p><h2 className="mt-2 text-xl font-black">Current level</h2>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Your learning</p><h2 className="mt-2 text-xl font-black">Help your child get started</h2>
             {data.learner.currentLevel ? <><p className="mt-4 rounded-xl bg-[#FFF8ED] p-4 font-black text-[#114B33]">{data.learner.currentLevel.name}</p>{data.learner.currentLevel.description && <p className="mt-3 text-sm leading-6 text-[#6B5B4B]">{data.learner.currentLevel.description}</p>}</> :
-              <p className="mt-4 text-sm leading-6 text-[#6B5B4B]">Your level will be set as your learning journey develops.</p>}
+              <p className="mt-4 text-sm leading-6 text-[#6B5B4B]">Add a child profile, then use the Yoruba Challenge to understand where they are starting from.</p>}
           </div>
           <div className="rounded-3xl border border-[#E8DECE] bg-white p-6">
             <p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Learning credit</p><h2 className="mt-2 text-xl font-black">{money(data.stats.availableCredit)}</h2>
