@@ -78,28 +78,16 @@ function learnerName(booking: Booking) {
 }
 
 export default function TutorDashboardPage() {
-  const [tutorId, setTutorId] = useState("");
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [actionId, setActionId] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setTutorId(params.get("tutorId") ?? "");
-  }, []);
-
-  async function loadDashboard(id: string) {
-    if (!id) {
-      setLoading(false);
-      setError("Add your tutor profile ID to the URL, for example /tutor/dashboard?tutorId=YOUR_ID.");
-      return;
-    }
-
+  async function loadDashboard() {
     try {
       setError("");
-      const response = await fetch(`/api/tutor/dashboard?tutorId=${encodeURIComponent(id)}`);
+      const response = await fetch("/api/tutor/dashboard");
       const result = await response.json();
       if (!response.ok) throw new Error(result.error ?? "Unable to load dashboard.");
       setData(result);
@@ -111,8 +99,8 @@ export default function TutorDashboardPage() {
   }
 
   useEffect(() => {
-    if (tutorId) void loadDashboard(tutorId);
-  }, [tutorId]);
+    void loadDashboard();
+  }, []);
 
   async function updateBooking(bookingId: string, action: "confirm" | "reject" | "complete") {
     setActionId(bookingId);
@@ -123,14 +111,14 @@ export default function TutorDashboardPage() {
       const response = await fetch("/api/tutor/bookings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tutorId, bookingId, action }),
+        body: JSON.stringify({ bookingId, action }),
       });
 
       const result = await response.json();
       if (!response.ok) throw new Error(result.error ?? "Unable to update booking.");
 
       setMessage(result.message);
-      await loadDashboard(tutorId);
+      await loadDashboard();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to update booking.");
     } finally {
@@ -257,7 +245,7 @@ export default function TutorDashboardPage() {
               <EmptyState title="No availability" text="Add times so learners can request lessons." />
             )}
 
-            <Link href={`/tutor/availability?tutorId=${data.tutor.id}`} className="mt-5 inline-flex w-full items-center justify-center rounded-xl border border-[#CFC3B2] px-4 py-3 text-sm font-black text-[#114B33]">
+            <Link href="/tutor/availability" className="mt-5 inline-flex w-full items-center justify-center rounded-xl border border-[#CFC3B2] px-4 py-3 text-sm font-black text-[#114B33]">
               Manage availability
             </Link>
           </section>
@@ -284,7 +272,7 @@ export default function TutorDashboardPage() {
         </section>
 
         <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <QuickLink href={`/tutor/profile?tutorId=${data.tutor.id}`} icon={<UserRound className="h-5 w-5" />} title="Edit profile" text="Update your photo, bio, rate and teaching details." />
+          <QuickLink href="/tutor/profile" icon={<UserRound className="h-5 w-5" />} title="Edit profile" text="Update your photo, bio, rate and teaching details." />
           <QuickLink href={`/tutor/availability?tutorId=${data.tutor.id}`} icon={<CalendarDays className="h-5 w-5" />} title="Availability" text="Set when learners can book you." />
           <QuickLink href={`/tutors/${data.tutor.id}`} icon={<ExternalLink className="h-5 w-5" />} title="Public profile" text="See what learners currently see." />
           <QuickLink href="/challenge" icon={<GraduationCap className="h-5 w-5" />} title="Yoruba Challenge" text="Try the learner acquisition experience." />
