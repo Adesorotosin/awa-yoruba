@@ -72,19 +72,19 @@ export default function LearnerDashboardPage() {
 
   return <main className="min-h-screen bg-[#FFF8ED] text-[#241C16]">
     <header className="fixed left-0 right-0 top-0 z-50 border-b border-[#E8DECE] bg-white/95 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
         <Link href="/" className="flex items-center">
-          <Image src="/logo.svg" alt="AWA Yoruba" width={120} height={36} priority className="h-8 w-auto" />
+          <Image src="/logo.svg" alt="AWA Yoruba" width={144} height={44} priority className="h-10 w-auto" />
         </Link>
-        <div className="flex items-center gap-2 sm:gap-4">
-          <Link href="/tutors" className="hidden text-sm font-bold text-[#114B33] sm:inline">Find a tutor</Link>
+        <div className="flex items-center gap-3 sm:gap-6">
+          <Link href="/tutors" className="hidden text-base font-bold text-[#114B33] sm:inline">Find a tutor</Link>
           <Link href="/challenge" className="hidden text-sm font-bold text-[#114B33] sm:inline">Yoruba Challenge</Link>
-          <button onClick={logout} className="rounded-xl border border-[#DCCFBD] px-4 py-2 text-sm font-bold hover:bg-[#FFF8ED]">Log out</button>
+          <button onClick={logout} className="rounded-xl border border-[#DCCFBD] px-5 py-2.5 text-sm font-bold hover:bg-[#FFF8ED]">Log out</button>
         </div>
       </div>
     </header>
 
-    <div className="mx-auto max-w-7xl px-5 pb-8 pt-[6.5rem] sm:px-8">
+    <div className="mx-auto max-w-7xl px-5 pb-8 pt-[8rem] sm:px-8">
       <section className="rounded-3xl bg-[#114B33] p-7 text-white sm:p-9">
         <p className="text-sm font-semibold text-[#DCE9DF]">Learner dashboard</p>
         <h1 className="mt-2 text-3xl font-black sm:text-4xl">{greeting}</h1>
