@@ -1,10 +1,8 @@
-// src/lib/guestSession.ts
 import { cookies } from "next/headers";
 import { db } from "./db";
 
 const GUEST_COOKIE_NAME = "yoruba_guest_token";
 
-// Cast db to bypass strict Prisma type checks on Netlify build servers
 const prisma = db as any;
 
 export async function getOrCreateGuestSession() {
@@ -16,30 +14,24 @@ export async function getOrCreateGuestSession() {
       where: { sessionToken: guestToken },
     });
 
-    if (existingSession && !existingSession.isClaimed) {
+    if (existingSession) {
       return existingSession;
     }
   }
 
-  // Generate unique token using built-in crypto API
   guestToken = crypto.randomUUID();
 
   const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + 30); // Valid for 30 days
+  expiresAt.setDate(expiresAt.getDate() + 30);
 
-  // Create guest session record in database
-  let newSession = null;
-  if (prisma.guestSession) {
-    newSession = await prisma.guestSession.create({
-      data: {
-        sessionToken: guestToken,
-        pendingPoints: 0,
-        expiresAt,
-      },
-    });
-  }
+  const newSession = await prisma.guestSession.create({
+    data: {
+      sessionToken: guestToken,
+      pendingPoints: 0,
+      expiresAt,
+    },
+  });
 
-  // Set HTTP-only cookie
   cookieStore.set(GUEST_COOKIE_NAME, guestToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
