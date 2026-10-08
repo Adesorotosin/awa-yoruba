@@ -59,6 +59,8 @@ export default function TutorBookingPage({ params }: { params: Promise<{ id: str
   const [time, setTime] = useState("");
   const [learnerName, setLearnerName] = useState("");
   const [learnerEmail, setLearnerEmail] = useState("");
+  const [children, setChildren] = useState<{ id: string; name: string; age: number | null }[]>([]);
+  const [childProfileId, setChildProfileId] = useState("");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -86,6 +88,8 @@ export default function TutorBookingPage({ params }: { params: Promise<{ id: str
 
         setLearnerName(data.learner.name ?? "");
         setLearnerEmail(data.learner.email ?? "");
+        setChildren(data.learner.children ?? []);
+        if ((data.learner.children ?? []).length === 1) setChildProfileId(data.learner.children[0].id);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unable to load tutor.");
       } finally {
@@ -121,7 +125,7 @@ export default function TutorBookingPage({ params }: { params: Promise<{ id: str
       const response = await fetch(`/api/tutors/${tutorId}/booking`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date, time, notes }),
+        body: JSON.stringify({ date, time, notes, childProfileId: childProfileId || null }),
       });
 
       const data = await response.json();
@@ -185,15 +189,38 @@ export default function TutorBookingPage({ params }: { params: Promise<{ id: str
           <form onSubmit={submitBooking} className="rounded-3xl border border-[#E4DBCD] bg-white p-6 shadow-sm sm:p-8">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#B07B22]">Book a lesson</p>
             <h1 className="mt-3 text-3xl font-black">Book with {tutor.displayName ?? "this tutor"}.</h1>
-            <p className="mt-3 text-sm leading-6 text-[#666B65]">Choose an available time and tell us what you want to learn. Your booking will be attached to your signed-in learner account.</p>
+            <p className="mt-3 text-sm leading-6 text-[#666B65]">Choose an available time and tell us what you want to learn. Your booking will be attached to your parent account, and you can choose which child the lesson is for.</p>
 
             {error && <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>}
 
             <div className="mt-7 rounded-2xl border border-[#DCCFBD] bg-[#FFF8ED] p-4">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Booking as</p>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Parent account</p>
               <p className="mt-2 font-black text-[#241C16]">{learnerName || "Your learner account"}</p>
               <p className="mt-1 text-sm text-[#6B5B4B]">{learnerEmail || "Signed-in learner"}</p>
             </div>
+
+            {children.length > 0 && (
+              <div className="mt-5">
+                <label className="text-sm font-bold" htmlFor="child">Who is this lesson for?</label>
+                <select id="child" value={childProfileId} onChange={(event) => setChildProfileId(event.target.value)} required className="mt-2 w-full rounded-xl border border-[#DCCFBD] bg-[#FFFDF9] px-4 py-3 outline-none focus:border-[#114B33]">
+                  <option value="">Select your child</option>
+                  {children.map((child) => (
+                    <option key={child.id} value={child.id}>
+                      {child.name}{child.age ? ` · Age ${child.age}` : ""}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-2 text-xs text-[#8A8175]">This helps your tutor understand who the lesson is for.</p>
+              </div>
+            )}
+
+            {children.length === 0 && (
+              <div className="mt-5 rounded-2xl border border-[#DCCFBD] bg-[#FFF8ED] p-4">
+                <p className="text-sm font-bold">Booking for yourself</p>
+                <p className="mt-1 text-xs leading-5 text-[#6B5B4B]">If you are booking for a child, add their profile from your parent dashboard first.</p>
+                <Link href="/learner/dashboard" className="mt-2 inline-block text-xs font-black text-[#114B33]">Open parent dashboard →</Link>
+              </div>
+            )}
 
             <div className="mt-5">
               <label className="text-sm font-bold" htmlFor="date">Choose a date</label>
