@@ -118,7 +118,18 @@ export default function LearnerDashboardPage() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8F0EA] font-black text-[#114B33]">{(booking.tutorProfile?.displayName || "T").slice(0, 1).toUpperCase()}</div>}
                 <div><p className="font-black">{booking.tutorProfile?.displayName || "Yoruba Tutor"}</p><p className="mt-1 text-sm text-[#6B5B4B]">{formatDate(booking.scheduledAt)}</p></div>
               </div>
-              <div className="sm:text-right"><p className="font-black">{money(booking.totalAmount, booking.currency)}</p><p className="mt-1 text-xs font-bold uppercase tracking-wide text-[#8A7968]">{booking.status} · {booking.paymentStatus}</p></div>
+              <div className="sm:text-right">
+                <p className="font-black">{money(booking.totalAmount, booking.currency)}</p>
+                <p className="mt-1 text-xs font-bold uppercase tracking-wide text-[#8A7968]">{booking.status} · {booking.paymentStatus}</p>
+                {booking.status === "AWAITING_PAYMENT" && booking.paymentStatus !== "PAID" && (
+                  <Link
+                    href={`/learner/checkout/${booking.id}`}
+                    className="mt-3 inline-flex rounded-xl bg-[#114B33] px-4 py-2 text-xs font-black text-white"
+                  >
+                    Pay now
+                  </Link>
+                )}
+              </div>
             </div>
           </div>)}</div>}
         </div>
