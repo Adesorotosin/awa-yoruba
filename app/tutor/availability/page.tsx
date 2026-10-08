@@ -53,14 +53,27 @@ export default function TutorAvailabilityPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const id = new URLSearchParams(window.location.search).get("tutorId") ?? "";
-    setTutorId(id);
+    void loadCurrentTutor();
   }, []);
+
+  async function loadCurrentTutor() {
+    try {
+      const response = await fetch("/api/auth/me");
+      const data = await response.json();
+      if (!response.ok || data.user?.role !== "TUTOR" || !data.user?.tutorProfileId) {
+        throw new Error("Please log in as an approved tutor.");
+      }
+      setTutorId(data.user.tutorProfileId);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to identify your tutor account.");
+      setLoading(false);
+    }
+  }
 
   async function loadAvailability(id = tutorId) {
     if (!id) {
       setLoading(false);
-      setError("No tutor profile was selected. Open this page with a tutorId.");
+      setError("Please log in as a tutor to manage your availability.");
       return;
     }
 
