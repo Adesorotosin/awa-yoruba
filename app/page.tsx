@@ -62,16 +62,16 @@ const benefits = [
   },
   {
     icon: Globe2,
-    title: "For learners everywhere",
-    text: "Whether you are in Lagos, London, Houston or anywhere else, Yoruba is always within reach.",
+    title: "Built for diaspora families",
+    text: "Whether your family is in London, Houston, Toronto or anywhere else, your child can stay connected to Yoruba.",
   },
 ];
 
 const steps = [
-  ["01", "Discover", "Browse tutors by experience, price, rating and availability."],
-  ["02", "Choose", "Open a tutor profile, compare their teaching style and pick the right fit."],
-  ["03", "Book & pay", "Select a convenient time and complete your booking securely."],
-  ["04", "Learn & grow", "Meet your tutor, build your Yoruba and progress through learning levels."],
+  ["01", "Discover", "Browse trusted tutors and find a teaching style that fits your child."],
+  ["02", "Choose", "Choose a tutor based on experience, availability and your child’s needs."],
+  ["03", "Book & pay", "Choose a time, select which child the lesson is for, and book securely."],
+  ["04", "Learn & grow", "Your child learns, builds confidence and progresses through Yoruba levels."],
 ];
 
 export default function Home() {
@@ -84,15 +84,15 @@ export default function Home() {
           <div className="flex flex-col justify-center">
             <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-[#D8C9B2] bg-white/60 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#114B33]">
               <span className="h-2 w-2 rounded-full bg-[#E5B252]" />
-              The Yoruba learning marketplace
+              Yoruba for the next generation
             </div>
 
             <h1 className="max-w-3xl text-5xl font-black leading-[0.98] tracking-[-0.04em] text-[#17231E] sm:text-6xl lg:text-7xl">
-              Learn Yoruba from people who speak it.
+              Help your child speak Yoruba. Keep your heritage alive.
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-[#5D625D] sm:text-xl">
-              Find the right Yoruba tutor, book one-on-one lessons, pay securely and learn at your own pace — wherever you are.
+              Live Yoruba lessons with trusted tutors for children growing up outside Nigeria. Give your child the language, confidence and connection to Yoruba culture that can travel with them anywhere in the world.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -105,7 +105,7 @@ export default function Home() {
             </div>
 
             <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-[#666A64]">
-              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#114B33]" /> Flexible lessons</span>
+              <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#114B33]" /> Child-friendly lessons</span>
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#114B33]" /> Verified tutors</span>
               <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-[#114B33]" /> Secure checkout</span>
             </div>
@@ -199,9 +199,9 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1fr_auto] lg:items-center lg:px-12 lg:py-20">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#E5B252]">A little challenge</p>
-            <h2 className="mt-3 text-4xl font-black tracking-[-0.03em] sm:text-5xl">Think you know Yoruba?</h2>
+            <h2 className="mt-3 text-4xl font-black tracking-[-0.03em] sm:text-5xl">How much Yoruba does your child know?</h2>
             <p className="mt-5 max-w-2xl text-base leading-7 text-[#D8E4DC] sm:text-lg">
-              Take a quick 10-question Yoruba challenge. Do well and earn learning credit toward your AWA Yoruba lessons.
+              Take a quick 10-question challenge with your child. See where they are starting from and earn learning credit toward an AWA Yoruba lesson.
             </p>
             <p className="mt-3 text-sm font-semibold text-[#BFD0C4]">One welcome attempt. No endless reward farming.</p>
           </div>
@@ -216,7 +216,7 @@ export default function Home() {
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div className="max-w-2xl">
               <p className="text-xs font-black uppercase tracking-[0.18em] text-[#B07B22]">Meet your next tutor</p>
-              <h2 className="mt-3 text-4xl font-black tracking-[-0.03em] text-[#17231E] sm:text-5xl">Choose someone who fits how you learn.</h2>
+              <h2 className="mt-3 text-4xl font-black tracking-[-0.03em] text-[#17231E] sm:text-5xl">Choose a tutor your child will enjoy learning with.</h2>
             </div>
             <a href="/tutors" className="inline-flex items-center gap-2 text-sm font-black text-[#114B33]">Browse all tutors <ArrowRight className="h-4 w-4" /></a>
           </div>
@@ -285,8 +285,8 @@ export default function Home() {
       <section className="bg-[#F5EAD7]">
         <div className="mx-auto max-w-5xl px-5 py-20 text-center sm:px-8 lg:py-24">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-[#B07B22]">Start learning</p>
-          <h2 className="mt-3 text-4xl font-black tracking-[-0.03em] text-[#17231E] sm:text-6xl">Your next Yoruba conversation starts here.</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-[#666B65]">Find a tutor who fits your goals, schedule your first lesson and start building a stronger connection with Yoruba.</p>
+          <h2 className="mt-3 text-4xl font-black tracking-[-0.03em] text-[#17231E] sm:text-6xl">Give your child a stronger connection to Yoruba.</h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-[#666B65]">Create your family account, add your child, find a trusted tutor and start building a stronger connection with Yoruba.</p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <a href="#tutors" className="rounded-full bg-[#114B33] px-7 py-3.5 text-sm font-black text-white transition hover:bg-[#0B3524]">Find your tutor</a>
             <Link href="/signup" className="rounded-full border border-[#B8A990] bg-white px-7 py-3.5 text-sm font-black text-[#114B33]">Create an account</Link>
@@ -305,7 +305,7 @@ export default function Home() {
                 height={68}
                 className="h-14 w-auto object-contain"
               />
-              <p className="mt-3 max-w-sm text-sm leading-6 text-[#8E8E8E]">A marketplace connecting Yoruba learners with tutors who can help them learn, speak and belong.</p>
+              <p className="mt-3 max-w-sm text-sm leading-6 text-[#8E8E8E]">A Yoruba learning platform helping families in the diaspora raise children who can learn, speak and connect with their heritage.</p>
             </div>
             <div className="grid grid-cols-2 gap-x-10 gap-y-3 text-sm sm:grid-cols-3">
               <a href="#tutors" className="hover:text-white">Find a Tutor</a>
