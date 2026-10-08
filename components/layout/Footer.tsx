@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
@@ -6,7 +7,15 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
-            <Link href="/" className="text-lg font-black tracking-wide text-white">AWA YORUBA</Link>
+            <Link href="/" aria-label="ÀWA YORÙBÁ home">
+              <Image
+                src="/logo.svg"
+                alt="ÀWA YORÙBÁ"
+                width={77}
+                height={68}
+                className="h-14 w-auto object-contain"
+              />
+            </Link>
             <p className="mt-3 max-w-sm text-sm leading-6 text-[#8E8E8E]">
               A marketplace connecting Yoruba learners with tutors who help them learn, speak and belong.
             </p>
