@@ -260,7 +260,7 @@ export default function TutorDashboardPage() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.16em] text-[#B07B22]">Schedule</p>
-              <h3 className="mt-2 text-xl font-black">Upcoming confirmed lessons</h3>
+              <h3 className="mt-2 text-xl font-black">Upcoming lessons</h3>
             </div>
             <Users className="h-5 w-5 text-[#114B33]" />
           </div>
@@ -272,7 +272,7 @@ export default function TutorDashboardPage() {
               ))}
             </div>
           ) : (
-            <EmptyState title="No confirmed lessons yet" text="Once you confirm a request, it will appear on your schedule." />
+            <EmptyState title="No upcoming lessons yet" text="Accepted lessons appear here while they wait for payment or remain confirmed." />
           )}
         </section>
 
