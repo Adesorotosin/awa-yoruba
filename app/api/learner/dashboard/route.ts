@@ -18,6 +18,7 @@ export async function GET() {
     const bookings = await db.booking.findMany({
       where: { learnerId: user.id },
       include: {
+        childProfile: { select: { id: true, name: true, age: true, currentLevel: { select: { id: true, name: true } } } },
         tutorProfile: { select: { id: true, displayName: true, photoUrl: true, averageRating: true } },
         level: { select: { id: true, name: true } },
       },
@@ -29,7 +30,7 @@ export async function GET() {
     const upcoming = bookings.filter(
       (booking) =>
         booking.scheduledAt >= now &&
-        ["PENDING", "CONFIRMED"].includes(booking.status)
+        ["PENDING", "AWAITING_PAYMENT", "CONFIRMED"].includes(booking.status)
     );
 
     const completedLessons = bookings.filter((booking) => booking.status === "COMPLETED").length;
@@ -68,6 +69,11 @@ export async function GET() {
         completedLessons,
         availableCredit,
       },
+      children: await db.childProfile.findMany({
+        where: { parentId: user.id },
+        include: { currentLevel: true },
+        orderBy: { createdAt: "asc" },
+      }),
       bookings: bookings.slice(0, 6),
       credits,
     });
