@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSession, setPassword } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { getGuestSessionToken } from "@/lib/guestSession";
 
 export async function POST(request: Request) {
   try {
@@ -23,9 +24,57 @@ export async function POST(request: Request) {
     });
 
     await setPassword(user.id, password);
+
+    const guestToken = await getGuestSessionToken();
+
+    if (guestToken) {
+      await db.$transaction(async (tx) => {
+        const guestSession = await tx.guestSession.findUnique({
+          where: { sessionToken: guestToken },
+          include: {
+            challengeAttempts: {
+              where: { rewardAmount: { gt: 0 } },
+              include: { learningCredit: true },
+              orderBy: { completedAt: "desc" },
+              take: 1,
+            },
+          },
+        });
+
+        if (!guestSession || guestSession.isClaimed || guestSession.userId) return;
+
+        const attempt = guestSession.challengeAttempts[0];
+
+        if (attempt && !attempt.learningCredit) {
+          await tx.learningCredit.create({
+            data: {
+              userId: user.id,
+              amount: attempt.rewardAmount,
+              currency: "NGN",
+              source: "WELCOME_CHALLENGE",
+              attemptId: attempt.id,
+              status: "AVAILABLE",
+            },
+          });
+        }
+
+        await tx.guestSession.update({
+          where: { id: guestSession.id },
+          data: {
+            userId: user.id,
+            isClaimed: true,
+            pendingPoints: 0,
+          },
+        });
+      });
+    }
+
     await createSession(user.id);
 
-    return NextResponse.json({ success: true, user: { id: user.id, name: user.name, role: user.role } });
+    return NextResponse.json({
+      success: true,
+      user: { id: user.id, name: user.name, role: user.role },
+    });
   } catch (error) {
     console.error("Signup error:", error);
     return NextResponse.json({ error: "Unable to create your account." }, { status: 500 });
