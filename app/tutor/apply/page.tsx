@@ -90,6 +90,12 @@ export default function TutorApplyPage() {
               </div>
 
               <label className="block">
+                <span className="text-sm font-bold">Account password</span>
+                <input name="password" type="password" minLength={8} required className="mt-2 w-full rounded-xl border border-[#DCCFBD] bg-[#FFFDF9] px-4 py-3 outline-none transition focus:border-[#7655FB]" placeholder="At least 8 characters" />
+                <span className="mt-1 block text-xs font-normal text-[#6B5B4B]">You’ll use this to log in to your tutor dashboard.</span>
+              </label>
+
+              <label className="block">
                 <span className="text-sm font-bold">Yoruba teaching specialties</span>
                 <input name="specialties" required className="mt-2 w-full rounded-xl border border-[#DCCFBD] bg-[#FFFDF9] px-4 py-3 outline-none transition focus:border-[#7655FB]" placeholder="Conversation, children, culture, beginners..." />
               </label>
