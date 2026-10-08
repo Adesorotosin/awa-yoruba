@@ -1,0 +1,27 @@
+name: Keep Neon Database Active
+
+on:
+  schedule:
+    # Runs every 4 minutes
+    - cron: '*/4 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm ci || npm install
+
+      - name: Ping Neon DB
+        run: npx prisma db execute --script "SELECT 1;"
+        env:
+          DATABASE_URL: ${{ secrets.DIRECT_URL }}
