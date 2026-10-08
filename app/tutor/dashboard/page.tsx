@@ -369,6 +369,37 @@ function BookingCard({
   );
 }
 
+
+function QuickLink({
+  href,
+  icon,
+  title,
+  text: description,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  title: string;
+  text: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group rounded-3xl border border-[#E4DBCD] bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+    >
+      <div className="flex items-center gap-3">
+        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#EFF5EF] text-[#114B33]">
+          {icon}
+        </span>
+        <h3 className="font-black">{title}</h3>
+      </div>
+      <p className="mt-3 text-sm leading-6 text-[#777B75]">{description}</p>
+      <span className="mt-4 inline-flex text-sm font-black text-[#114B33] group-hover:underline">
+        Open
+      </span>
+    </Link>
+  );
+}
+
 function dataSafeTutorId() {
   if (typeof window === "undefined") return "";
   const id = new URLSearchParams(window.location.search).get("tutorId");
