@@ -102,6 +102,11 @@ export default function TutorDashboardPage() {
     void loadDashboard();
   }, []);
 
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.href = "/login";
+  }
+
   async function updateBooking(bookingId: string, action: "confirm" | "reject" | "complete") {
     setActionId(bookingId);
     setError("");
@@ -167,9 +172,9 @@ export default function TutorDashboardPage() {
             <Link href={`/tutors/${data.tutor.id}`} className="hidden rounded-full border border-[#D7CCBD] px-4 py-2 text-sm font-bold text-[#114B33] sm:inline-flex">
               View public profile
             </Link>
-            <Link href="/tutors" className="inline-flex items-center gap-2 rounded-full bg-[#114B33] px-4 py-2 text-sm font-bold text-white">
-              <LogOut className="h-4 w-4" /> Exit
-            </Link>
+            <button type="button" onClick={logout} className="inline-flex items-center gap-2 rounded-full bg-[#114B33] px-4 py-2 text-sm font-bold text-white">
+              <LogOut className="h-4 w-4" /> Log out
+            </button>
           </div>
         </div>
       </header>
