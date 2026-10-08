@@ -8,16 +8,325 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+/*
+ * AWA Yoruba data model
+ *
+ * Product model:
+ * Learner/Parent -> Tutor discovery -> Booking -> Payment -> Lesson
+ *                         |
+ *                         -> Tutor wallet / ledger
+ *
+ * Growth model:
+ * Yoruba Challenge -> one attempt per learner/challenge -> Learning Credit
+ *                   -> credit can be applied to an eligible booking/level
+ *
+ * Legacy trial/game fields are intentionally retained for backwards
+ * compatibility while the marketplace is being built.
+ */
+
 model User {
-  id            String         @id @default(cuid())
-  name          String?
-  email         String?        @unique
-  phone         String?
-  role          String         @default("PARENT")
-  points        Int            @default(0)
-  trialBookings TrialBooking[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id                String              @id @default(cuid())
+  name              String?
+  email             String?             @unique
+  phone             String?
+  role              String              @default("LEARNER")
+  points            Int                 @default(0)
+
+  tutorProfile      TutorProfile?
+  learnerProfile    LearnerProfile?
+  childProfiles     ChildProfile[]
+  trialBookings     TrialBooking[]
+  bookingsAsLearner Booking[]           @relation("LearnerBookings")
+  bookingsAsTutor   Booking[]           @relation("TutorBookings")
+  payments          Payment[]
+  challengeAttempts ChallengeAttempt[]
+  learningCredits   LearningCredit[]
+  reviewsGiven      Review[]             @relation("ReviewsGiven")
+  reviewsReceived   Review[]             @relation("ReviewsReceived")
+  wallet            Wallet?
+  availability      TutorAvailability[]
+  gameSession       GuestSession?
+
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+model TutorProfile {
+  id                  String             @id @default(cuid())
+  userId              String             @unique
+  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName         String?
+  bio                 String?
+  photoUrl            String?
+  qualifications      String?
+  experienceYears     Int?
+  languages           String?
+  specialties         String?
+  hourlyRate          Int?
+  currency            String             @default("NGN")
+  applicationStatus   String             @default("PENDING")
+  verificationStatus  String             @default("PENDING")
+  isPublished         Boolean            @default(false)
+  averageRating       Float              @default(0)
+  totalReviews        Int                @default(0)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  bookings            Booking[]          @relation("TutorProfileBookings")
+  availability        TutorAvailability[]
+  reviews             Review[]           @relation("TutorProfileReviews")
+}
+
+model LearnerProfile {
+  id                String        @id @default(cuid())
+  userId            String        @unique
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName       String?
+  learningGoal      String?
+  currentLevelId    String?
+  currentLevel      LearningLevel? @relation("CurrentLearnerLevel", fields: [currentLevelId], references: [id], onDelete: SetNull)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  bookings          Booking[]     @relation("LearnerProfileBookings")
+  children          ChildProfile[]
+}
+
+model ChildProfile {
+  id                String         @id @default(cuid())
+  parentId          String
+  parent            User           @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  learnerProfileId  String?
+  learnerProfile    LearnerProfile? @relation(fields: [learnerProfileId], references: [id], onDelete: SetNull)
+  name              String
+  age               Int?
+  currentLevelId    String?
+  currentLevel      LearningLevel? @relation("CurrentChildLevel", fields: [currentLevelId], references: [id], onDelete: SetNull)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  bookings          Booking[]
+}
+
+model LearningLevel {
+  id                String             @id @default(cuid())
+  name              String
+  slug              String             @unique
+  description       String?
+  levelOrder        Int                @unique
+  priceAmount       Int
+  currency          String             @default("NGN")
+  isActive           Boolean            @default(true)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  learners           LearnerProfile[]   @relation("CurrentLearnerLevel")
+  children           ChildProfile[]     @relation("CurrentChildLevel")
+  challenges         Challenge[]
+  bookings            Booking[]
+}
+
+model Booking {
+  id                String         @id @default(cuid())
+  learnerId         String
+  learner            User           @relation("LearnerBookings", fields: [learnerId], references: [id], onDelete: Cascade)
+  learnerProfileId   String?
+  learnerProfile     LearnerProfile? @relation("LearnerProfileBookings", fields: [learnerProfileId], references: [id], onDelete: SetNull)
+  childProfileId     String?
+  childProfile       ChildProfile? @relation(fields: [childProfileId], references: [id], onDelete: SetNull)
+  tutorId            String
+  tutor              User           @relation("TutorBookings", fields: [tutorId], references: [id], onDelete: Cascade)
+  tutorProfileId     String?
+  tutorProfile       TutorProfile?  @relation("TutorProfileBookings", fields: [tutorProfileId], references: [id], onDelete: SetNull)
+  levelId            String?
+  level              LearningLevel? @relation(fields: [levelId], references: [id], onDelete: SetNull)
+  scheduledAt        DateTime
+  durationMinutes    Int            @default(60)
+  priceAmount        Int
+  discountAmount     Int            @default(0)
+  totalAmount        Int
+  currency           String         @default("NGN")
+  status             String         @default("PENDING")
+  paymentStatus      String         @default("UNPAID")
+  meetingUrl         String?
+  notes              String?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  payment            Payment?
+  review             Review?
+  learningCredits    LearningCredit[]
+}
+
+model Payment {
+  id                String    @id @default(cuid())
+  bookingId         String    @unique
+  booking           Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider          String?
+  providerReference String?   @unique
+  amount            Int
+  currency          String    @default("NGN")
+  status            String    @default("PENDING")
+  paidAt            DateTime?
+  metadata          Json?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Wallet {
+  id           String            @id @default(cuid())
+  userId       String            @unique
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currency     String            @default("NGN")
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  transactions WalletTransaction[]
+}
+
+model WalletTransaction {
+  id          String   @id @default(cuid())
+  walletId    String
+  wallet      Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  type        String
+  amount      Int
+  currency    String   @default("NGN")
+  reference   String?  @unique
+  description String?
+  status      String   @default("POSTED")
+  createdAt   DateTime @default(now())
+}
+
+model TutorAvailability {
+  id          String       @id @default(cuid())
+  tutorId     String
+  tutor       User         @relation(fields: [tutorId], references: [id], onDelete: Cascade)
+  dayOfWeek   Int
+  startTime   String
+  endTime     String
+  timezone    String       @default("Africa/Lagos")
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  tutorProfile TutorProfile? @relation(fields: [tutorProfileId], references: [id], onDelete: Cascade)
+  tutorProfileId String?
+
+  @@index([tutorId, dayOfWeek])
+}
+
+model Review {
+  id             String        @id @default(cuid())
+  bookingId      String        @unique
+  booking        Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  reviewerId     String
+  reviewer       User          @relation("ReviewsGiven", fields: [reviewerId], references: [id], onDelete: Cascade)
+  tutorId        String
+  tutor           User          @relation("ReviewsReceived", fields: [tutorId], references: [id], onDelete: Cascade)
+  tutorProfileId String?
+  tutorProfile   TutorProfile? @relation("TutorProfileReviews", fields: [tutorProfileId], references: [id], onDelete: SetNull)
+  rating         Int
+  comment        String?
+  createdAt      DateTime      @default(now())
+}
+
+model Challenge {
+  id               String             @id @default(cuid())
+  title            String
+  slug             String             @unique
+  description      String?
+  type             String             @default("WELCOME")
+  levelId          String?
+  level            LearningLevel?     @relation(fields: [levelId], references: [id], onDelete: SetNull)
+  maxRewardAmount  Int                @default(0)
+  currency         String             @default("NGN")
+  isActive         Boolean            @default(true)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  questions        Question[]
+  attempts         ChallengeAttempt[]
+}
+
+model Question {
+  id             String           @id @default(cuid())
+  challengeId    String?
+  challenge      Challenge?       @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  questionText   String
+  audioUrl       String?
+  pointsReward   Int              @default(0)
+  rewardAmount   Int              @default(0)
+  order          Int              @default(0)
+  isActive       Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+
+  options        QuestionOption[]
+}
+
+model QuestionOption {
+  id           String   @id @default(cuid())
+  questionId   String
+  question     Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  optionText   String
+  isCorrect    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model ChallengeAttempt {
+  id             String          @id @default(cuid())
+  challengeId    String
+  challenge      Challenge       @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  userId         String?
+  user           User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guestSessionId String?
+  guestSession   GuestSession?   @relation(fields: [guestSessionId], references: [id], onDelete: Cascade)
+  score          Int              @default(0)
+  totalQuestions Int              @default(0)
+  rewardAmount   Int              @default(0)
+  status         String          @default("COMPLETED")
+  completedAt    DateTime        @default(now())
+
+  learningCredit LearningCredit?
+
+  @@unique([challengeId, userId])
+  @@unique([challengeId, guestSessionId])
+  @@index([userId])
+  @@index([guestSessionId])
+}
+
+model LearningCredit {
+  id          String            @id @default(cuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount      Int
+  currency    String            @default("NGN")
+  source      String
+  attemptId   String?           @unique
+  attempt     ChallengeAttempt? @relation(fields: [attemptId], references: [id], onDelete: SetNull)
+  bookingId   String?
+  booking     Booking?          @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  status      String            @default("AVAILABLE")
+  expiresAt   DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([userId, status])
+}
+
+model GuestSession {
+  id            String             @id @default(cuid())
+  sessionToken  String             @unique
+  userId        String?            @unique
+  user          User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  pendingPoints Int                @default(0)
+  expiresAt     DateTime
+  isClaimed     Boolean            @default(false)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  challengeAttempts ChallengeAttempt[]
 }
 
 model TrialBooking {
