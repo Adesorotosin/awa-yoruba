@@ -273,7 +273,7 @@ export default function TutorDashboardPage() {
 
         <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <QuickLink href="/tutor/profile" icon={<UserRound className="h-5 w-5" />} title="Edit profile" text="Update your photo, bio, rate and teaching details." />
-          <QuickLink href={`/tutor/availability?tutorId=${data.tutor.id}`} icon={<CalendarDays className="h-5 w-5" />} title="Availability" text="Set when learners can book you." />
+          <QuickLink href="/tutor/availability" icon={<CalendarDays className="h-5 w-5" />} title="Availability" text="Set when learners can book you." />
           <QuickLink href={`/tutors/${data.tutor.id}`} icon={<ExternalLink className="h-5 w-5" />} title="Public profile" text="See what learners currently see." />
           <QuickLink href="/challenge" icon={<GraduationCap className="h-5 w-5" />} title="Yoruba Challenge" text="Try the learner acquisition experience." />
         </section>
@@ -350,7 +350,7 @@ function BookingCard({
             <CheckCircle2 className="h-4 w-4" /> {busy ? "Updating..." : "Mark completed"}
           </button>
         )}
-        <Link href={`/tutors/${dataSafeTutorId()}`} className="inline-flex items-center gap-2 rounded-xl border border-[#CFC3B2] px-4 py-2.5 text-sm font-bold text-[#114B33]">
+        <Link href="/tutors" className="inline-flex items-center gap-2 rounded-xl border border-[#CFC3B2] px-4 py-2.5 text-sm font-bold text-[#114B33]">
           <ExternalLink className="h-4 w-4" /> Profile
         </Link>
       </div>
@@ -389,8 +389,3 @@ function QuickLink({
   );
 }
 
-function dataSafeTutorId() {
-  if (typeof window === "undefined") return "";
-  const id = new URLSearchParams(window.location.search).get("tutorId");
-  return id ?? "";
-}
