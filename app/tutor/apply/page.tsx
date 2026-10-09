@@ -1,5 +1,16 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Clock3, ShieldCheck, Users } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Clock3,
+  Eye,
+  EyeOff,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 
 const benefits = [
   {
@@ -20,6 +31,8 @@ const benefits = [
 ];
 
 export default function TutorApplyPage() {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <main className="min-h-screen bg-[#FFF8ED] px-5 pb-16 pt-28 text-[#241C16] sm:px-8 lg:px-12">
       <div className="mx-auto max-w-5xl">
@@ -91,7 +104,26 @@ export default function TutorApplyPage() {
 
               <label className="block">
                 <span className="text-sm font-bold">Account password</span>
-                <input name="password" type="password" minLength={8} required className="mt-2 w-full rounded-xl border border-[#DCCFBD] bg-[#FFFDF9] px-4 py-3 outline-none transition focus:border-[#7655FB]" placeholder="At least 8 characters" />
+                <div className="relative mt-2">
+                  <input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    minLength={8}
+                    required
+                    autoComplete="new-password"
+                    className="w-full rounded-xl border border-[#DCCFBD] bg-[#FFFDF9] px-4 py-3 pr-12 outline-none transition focus:border-[#7655FB]"
+                    placeholder="At least 8 characters"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((visible) => !visible)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-pressed={showPassword}
+                    className="absolute inset-y-0 right-0 flex items-center justify-center px-4 text-[#6B5B4B] transition hover:text-[#241C16] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7655FB] rounded-r-xl"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
                 <span className="mt-1 block text-xs font-normal text-[#6B5B4B]">You’ll use this to log in to your tutor dashboard.</span>
               </label>
 
