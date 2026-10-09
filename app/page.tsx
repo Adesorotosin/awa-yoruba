@@ -18,7 +18,7 @@ const tutors = [
   {
     name: "Yoruba Tutor",
     initials: "YT",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+    image: "https://images.unsplash.com/photo-1723221890385-6949a72be9da?auto=format&fit=crop&w=160&q=80",
     rating: "4.9",
     lessons: "120+ lessons",
     rate: "₦8,500",
@@ -27,7 +27,7 @@ const tutors = [
   {
     name: "Native Yoruba Coach",
     initials: "NY",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+    image: "https://images.unsplash.com/photo-1530785602389-07594beb8b73?auto=format&fit=crop&w=160&q=80",
     rating: "5.0",
     lessons: "85+ lessons",
     rate: "₦10,000",
@@ -36,7 +36,7 @@ const tutors = [
   {
     name: "Yoruba Language Tutor",
     initials: "YL",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80",
+    image: "https://images.unsplash.com/photo-1687095961895-71ec4d207115?auto=format&fit=crop&w=160&q=80",
     rating: "4.8",
     lessons: "60+ lessons",
     rate: "₦7,500",
