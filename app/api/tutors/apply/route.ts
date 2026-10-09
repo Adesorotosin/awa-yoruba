@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { setPassword } from "@/lib/auth";
+import { createSession, setPassword } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
@@ -80,7 +80,9 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.redirect(new URL("/tutor/apply?success=1", request.url));
+    // Sign the new tutor in immediately and send them to their dashboard.
+    await createSession(user.id);
+    return NextResponse.redirect(new URL("/tutor/dashboard", request.url));
   } catch (error) {
     console.error("Tutor application error:", error);
     return NextResponse.redirect(new URL("/tutor/apply?error=server", request.url));
