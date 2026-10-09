@@ -79,7 +79,7 @@ export default function TestimonialsSection() {
       name: "Bola A.",
       location: "London, UK",
       avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1530785602389-07594beb8b73?w=150&auto=format&fit=crop&q=80",
     },
     {
       quote:
@@ -87,7 +87,7 @@ export default function TestimonialsSection() {
       name: "Tunde O.",
       location: "Houston, TX",
       avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1723221890385-6949a72be9da?w=150&auto=format&fit=crop&q=80",
     },
   ];
 
