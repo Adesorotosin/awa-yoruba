@@ -36,7 +36,7 @@ export async function GET(
         reviewedBy: true,
         reviewedAt: true,
         dialects: {
-          where: { dialect: { status: "PUBLISHED" } },
+          where: { dialect: { is: { status: "PUBLISHED" } } },
           select: {
             isPrimary: true,
             note: true,
