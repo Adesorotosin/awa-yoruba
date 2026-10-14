@@ -1,4 +1,4 @@
--- Additive migration: does not alter existing users, tutor, booking, payment, or challenge records.
+﻿-- Additive migration: does not alter existing users, tutor, booking, payment, or challenge records.
 CREATE TABLE "Dialect" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -57,6 +57,8 @@ CREATE UNIQUE INDEX "CulturalResource_slug_key" ON "CulturalResource"("slug");
 CREATE INDEX "CulturalResource_status_resourceType_idx" ON "CulturalResource"("status", "resourceType");
 CREATE INDEX "CulturalResource_difficulty_ageMin_ageMax_idx" ON "CulturalResource"("difficulty", "ageMin", "ageMax");
 CREATE INDEX "ResourceDialect_dialectId_resourceId_idx" ON "ResourceDialect"("dialectId", "resourceId");
+
+
 
 ALTER TABLE "ResourceDialect"
     ADD CONSTRAINT "ResourceDialect_resourceId_fkey"
