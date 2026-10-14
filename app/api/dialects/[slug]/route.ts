@@ -21,9 +21,11 @@ export async function GET(
         resources: {
           where: {
             resource: {
-              status: "PUBLISHED",
-              consentRecorded: true,
-              rightsStatus: { in: publishableRights },
+              is: {
+                status: "PUBLISHED",
+                consentRecorded: true,
+                rightsStatus: { in: publishableRights },
+              },
             },
           },
           orderBy: [{ isPrimary: "desc" }, { createdAt: "desc" }],
