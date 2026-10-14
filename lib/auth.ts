@@ -31,7 +31,10 @@ export async function setPassword(userId: string, password: string) {
 }
 
 export async function verifyUserPassword(email: string, password: string) {
-  const user = await db.user.findUnique({ where: { email: email.toLowerCase() } });
+  const user = await db.user.findUnique({
+    where: { email: email.toLowerCase() },
+    include: { tutorProfile: true },
+  });
   if (!user?.passwordHash || !(await verifyPassword(password, user.passwordHash))) return null;
   return user;
 }
