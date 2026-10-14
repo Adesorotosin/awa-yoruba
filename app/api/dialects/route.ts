@@ -17,12 +17,14 @@ export async function GET() {
           select: {
             resources: {
               where: {
-                dialect: { status: "PUBLISHED" },
+                dialect: { is: { status: "PUBLISHED" } },
                 resource: {
-                  status: "PUBLISHED",
-                  consentRecorded: true,
-                  rightsStatus: {
-                    in: ["ORIGINAL", "PUBLIC_DOMAIN", "LICENSED", "PERMISSION_GRANTED"],
+                  is: {
+                    status: "PUBLISHED",
+                    consentRecorded: true,
+                    rightsStatus: {
+                      in: ["ORIGINAL", "PUBLIC_DOMAIN", "LICENSED", "PERMISSION_GRANTED"],
+                    },
                   },
                 },
               },
