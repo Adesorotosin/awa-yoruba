@@ -62,7 +62,7 @@ Use these fields as a release checklist, not as a substitute for real editorial 
 - Set `reviewedBy` and `reviewedAt` after language/cultural review.
 - Keep incomplete or disputed entries in `DRAFT` until reviewed.
 
-There is currently no public write endpoint or editorial admin interface for this catalogue. Do not expose unauthenticated create/update endpoints; an authenticated editor workflow is a later task. Add content through a controlled seed/import or trusted database operation only after review.
+The editorial interface is available at `/admin/cultural-library` and uses the existing `ADMIN_KEY` secret via the `x-admin-key` header. It creates draft records and allows an editor to publish/unpublish them. Keep `ADMIN_KEY` private and configure it in the deployment environment; never hard-code it. The editor records a reviewer and blocks resource publication unless permission/consent and a recognised rights status are recorded. Editorial review still requires a knowledgeable human—these controls do not independently verify language, culture, copyright, or consent.
 
 ## Main routes
 
@@ -72,6 +72,7 @@ There is currently no public write endpoint or editorial admin interface for thi
 - `/dialects/[slug]` — dialect entry and related resources
 - `/library` — published cultural resources and type filters
 - `/library/[slug]` — resource detail, text, translation, and optional audio
+- `/admin/cultural-library` — admin-key-protected editorial workflow
 
 ## Build
 
