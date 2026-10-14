@@ -10,6 +10,8 @@ export default function Navbar() {
 
   const links = [
     { label: "Find a Tutor", href: "/tutors" },
+    { label: "Explore Dialects", href: "/dialects" },
+    { label: "Cultural Library", href: "/library" },
     { label: "How It Works", href: "/#how-it-works" },
     { label: "Yoruba Challenge", href: "/challenge" },
     { label: "For Tutors", href: "/#for-tutors" },

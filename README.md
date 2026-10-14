@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ÀWA Yorùbá
 
-## Getting Started
+ÀWA Yorùbá is a Yoruba learning platform designed especially for children in diaspora families. The product combines tutor-led learning, structured courses, and a growing regional-language and cultural library.
 
-First, run the development server:
+## Product areas
+
+- **Tutor marketplace** — tutor profiles, booking, payment, reviews, and learning credits.
+- **Dialect catalogue** — community-reviewed entries about regional Yoruba varieties and their contexts.
+- **Cultural library** — stories, proverbs, songs, vocabulary, conversations, transcripts, translations, and audio.
+- **Welcome challenge** — the existing Yoruba quiz and learning-credit flow.
+
+The dialect and cultural library is the first step in a larger evolution. Course modules, lessons, and learner progress will be added in a later phase.
+
+## Local development
+
+Requirements: Node.js compatible with the installed Next.js version, npm, and a PostgreSQL database.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Configure `.env` with the database values used by the project:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+DATABASE_URL="..."
+DIRECT_URL="..."
+```
 
-## Learn More
+Do not commit real credentials or copy production secrets into a shared environment.
 
-To learn more about Next.js, take a look at the following resources:
+## Dialect and cultural library database change
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The additive migration is:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`prisma/migrations/20261014000000_add_dialect_cultural_library/migration.sql`
 
-## Deploy on Vercel
+It adds `Dialect`, `CulturalResource`, and `ResourceDialect` without renaming or deleting existing tutor, learner, booking, payment, wallet, or challenge data.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+After pulling the feature branch, inspect the migration and confirm the target database before applying it:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npx prisma validate
+npx prisma generate
+npx prisma migrate status
+npx prisma migrate deploy
+```
+
+Use `npx prisma migrate dev --name add_dialect_cultural_library` only when intentionally generating a migration in local development. The reviewed migration is already checked in, so do not generate a second migration for the same change.
+
+## Public publishing rules
+
+The public catalogue endpoints expose only records whose status is `PUBLISHED`. Cultural resources also need `consentRecorded = true` and a `rightsStatus` of `ORIGINAL`, `PUBLIC_DOMAIN`, `LICENSED`, or `PERMISSION_GRANTED`.
+
+Use these fields as a release checklist, not as a substitute for real editorial review:
+
+- Confirm the spelling, tone marks, translation, pronunciation, and cultural context with a knowledgeable speaker.
+- Record contributor/source attribution and confirm the right to publish the material, including audio and images.
+- Record consent where a contributor or performer has provided material.
+- Set `reviewedBy` and `reviewedAt` after language/cultural review.
+- Keep incomplete or disputed entries in `DRAFT` until reviewed.
+
+The editorial interface is available at `/admin/cultural-library` and uses the existing `ADMIN_KEY` secret via the `x-admin-key` header. It creates draft records and allows an editor to publish/unpublish them. Keep `ADMIN_KEY` private and configure it in the deployment environment; never hard-code it. The editor records a reviewer and blocks resource publication unless permission/consent and a recognised rights status are recorded. Editorial review still requires a knowledgeable human—these controls do not independently verify language, culture, copyright, or consent.
+
+## Main routes
+
+- `/tutors` — tutor marketplace
+- `/challenge` — existing Yoruba welcome challenge
+- `/dialects` — published dialect catalogue
+- `/dialects/[slug]` — dialect entry and related resources
+- `/library` — published cultural resources and type filters
+- `/library/[slug]` — resource detail, text, translation, and optional audio
+- `/admin/cultural-library` — admin-key-protected editorial workflow
+
+## Build
+
+```bash
+npx prisma generate
+npm run build
+```
+
+The build and migration should be verified locally against a disposable/test database before merging or applying changes to production.
