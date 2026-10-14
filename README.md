@@ -17,7 +17,7 @@ Requirements: Node.js compatible with the installed Next.js version, npm, and a 
 
 ```bash
 npm install
-`npm run dev`
+npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
