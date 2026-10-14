@@ -28,7 +28,7 @@ export async function GET(request: Request) {
         audioUrl: true,
         imageUrl: true,
         dialects: {
-          where: { dialect: { status: "PUBLISHED" } },
+          where: { dialect: { is: { status: "PUBLISHED" } } },
           select: {
             isPrimary: true,
             dialect: { select: { name: true, slug: true, region: true } },
