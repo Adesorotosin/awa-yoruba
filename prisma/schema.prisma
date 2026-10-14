@@ -354,3 +354,69 @@ model PasswordResetToken {
   @@index([userId])
   @@index([expiresAt])
 }
+
+
+/// A regional Yoruba variety or cultural-linguistic community.
+model Dialect {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  summary     String
+  region      String?
+  description String?
+  status      String   @default("DRAFT")
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  resources   ResourceDialect[]
+
+  @@index([status, sortOrder])
+}
+
+/// A story, proverb, song, vocabulary set, conversation, or other learning resource.
+model CulturalResource {
+  id                 String   @id @default(cuid())
+  title              String
+  slug               String   @unique
+  summary            String
+  resourceType       String   @default("STORY")
+  originalText       String?
+  translation        String?
+  transcript         String?
+  audioUrl           String?
+  imageUrl           String?
+  ageMin             Int?
+  ageMax             Int?
+  difficulty         String   @default("BEGINNER")
+  status             String   @default("DRAFT")
+  contributorName    String?
+  sourceName         String?
+  sourceUrl          String?
+  rightsStatus       String   @default("UNCONFIRMED")
+  consentRecorded    Boolean  @default(false)
+  reviewedBy         String?
+  reviewedAt         DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  dialects           ResourceDialect[]
+
+  @@index([status, resourceType])
+  @@index([difficulty, ageMin, ageMax])
+}
+
+/// Join table supports resources that are shared across, or compared between, varieties.
+model ResourceDialect {
+  resourceId String
+  dialectId  String
+  isPrimary  Boolean  @default(false)
+  note       String?
+  createdAt  DateTime @default(now())
+
+  resource   CulturalResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  dialect    Dialect          @relation(fields: [dialectId], references: [id], onDelete: Cascade)
+
+  @@id([resourceId, dialectId])
+  @@index([dialectId, resourceId])
+}
