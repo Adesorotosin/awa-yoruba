@@ -8,6 +8,8 @@ CREATE TABLE "Dialect" (
     "description" TEXT,
     "status" TEXT NOT NULL DEFAULT 'DRAFT',
     "sortOrder" INTEGER NOT NULL DEFAULT 0,
+    "reviewedBy" TEXT,
+    "reviewedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     CONSTRAINT "Dialect_pkey" PRIMARY KEY ("id")
